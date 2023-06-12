@@ -1,0 +1,14 @@
+{
+  "light": {
+    "theme": "light",
+    "background": "#FFFFFF",
+    "surface": "#FAFAFA",
+    "primary": "#4766f3"
+  },
+  "dark": {
+    "theme": "light",
+    "background": "#FFFFFF",
+    "surface": "#FAFAFA",
+    "primary": "#4766f3"
+  }
+}
