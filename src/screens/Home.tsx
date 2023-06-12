@@ -1,12 +1,32 @@
-import React from "react"
-import { StatusBar } from "expo-status-bar"
-import { StyleSheet, Text, View } from "react-native"
+import React, { useEffect, useState } from "react"
+import { StyleSheet, Text, View, FlatList } from "react-native"
+
+import Task from "../components/Task"
+import theme from "../shared/theme"
+import axiosInstance from "../services/api"
+import { Tasks } from "../shared/types"
 
 export default function Home() {
+  const [tasks, setTasks] = useState<Tasks>([])
+
+  useEffect(() => {
+    axiosInstance.get("/todo").then(({ data }) => {
+      setTasks(data)
+    })
+  }, [])
+
   return (
     <View style={styles.container}>
-      <Text>This is Home</Text>
-      <StatusBar style="auto" />
+      <FlatList
+        data={tasks}
+        renderItem={({ item }) => <Task text={item.content} />}
+        keyExtractor={item => item.id}
+        style={styles.list}
+      />
+      <View style={styles.bottom}>
+        <Text style={styles.text}>{tasks.length} TASKS</Text>
+        <Text style={styles.text}>ADD NEW +</Text>
+      </View>
     </View>
   )
 }
@@ -16,6 +36,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
+    paddingTop: 50,
+  },
+  list: {
+    flex: 1,
+    flexDirection: "column",
+    gap: 30,
+    width: "100%",
+  },
+  bottom: {
+    width: "100%",
+    borderTopColor: theme.primary,
+    borderTopWidth: 1,
+    height: 100,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 30,
+  },
+  text: {
+    fontSize: 20,
+    color: theme.primary,
   },
 })
