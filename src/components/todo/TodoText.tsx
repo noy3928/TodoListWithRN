@@ -6,12 +6,14 @@ interface Props {
   content: string
   isCompleted: boolean
   isEditing?: boolean
+  isDetail?: boolean
 }
 
 export default function TodoText({
   content,
   isCompleted,
   isEditing = false,
+  isDetail = false,
 }: Props) {
   if (isEditing) {
     return (
@@ -27,7 +29,7 @@ export default function TodoText({
   return (
     <Text
       style={isCompleted ? styles.completed : styles.normal}
-      numberOfLines={5}
+      numberOfLines={isDetail ? undefined : 5}
       ellipsizeMode="tail"
     >
       {content}

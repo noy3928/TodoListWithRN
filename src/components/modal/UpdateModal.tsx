@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
   StyleSheet,
   Text,
@@ -6,8 +6,10 @@ import {
   Modal,
   Pressable,
   TextInput,
+  TextInputChangeEventData,
 } from "react-native"
 import theme from "../../shared/theme"
+import { addTodo } from "../../services"
 
 interface Props {
   modalVisible: boolean
@@ -15,9 +17,15 @@ interface Props {
 }
 
 export default function UpdateModal({ modalVisible, setModalVisible }: Props) {
+  const [content, setContent] = useState("")
+  const handleAddTodo = async () => {
+    if (!content) return
+    await addTodo(content)
+    setModalVisible(!modalVisible)
+  }
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
@@ -26,7 +34,10 @@ export default function UpdateModal({ modalVisible, setModalVisible }: Props) {
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <TextInput style={styles.textInput} />
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(value: string) => setContent(value)}
+          />
           <View style={styles.buttonsView}>
             <Pressable
               style={styles.button}
@@ -34,7 +45,7 @@ export default function UpdateModal({ modalVisible, setModalVisible }: Props) {
             >
               <Text style={styles.textStyle}>취소</Text>
             </Pressable>
-            <Pressable style={styles.button}>
+            <Pressable style={styles.button} onPress={handleAddTodo}>
               <Text style={styles.textStyle}>추가하기</Text>
             </Pressable>
           </View>
@@ -49,7 +60,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
@@ -69,9 +79,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
     padding: 10,
-    elevation: 2,
   },
   buttonsView: {
     flexDirection: "row",
@@ -92,6 +100,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: theme.primary,
     borderWidth: 1,
-    borderRadius: 5,
   },
 })

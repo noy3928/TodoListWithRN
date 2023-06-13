@@ -17,7 +17,7 @@ export default function Detail({ route }: DetailProps) {
   return (
     <View style={styles.container}>
       <View style={styles.centerContent}>
-        <TodoText content={content} isCompleted={isCompleted} />
+        <TodoText content={content} isCompleted={isCompleted} isDetail={true} />
       </View>
       <View style={styles.bottom}>
         <BouncyCheckbox
