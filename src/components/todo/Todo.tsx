@@ -13,6 +13,8 @@ interface Props {
 
 export default function Todo({ item, navigation }: Props) {
   const [isCompleted, setIsCompleted] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+
   return (
     <View style={styles.container}>
       <BouncyCheckbox
@@ -31,8 +33,20 @@ export default function Todo({ item, navigation }: Props) {
         onPress={() =>
           navigation.navigate("Detail", { content: item.content, id: item.id })
         }
+        style={styles.contentContainer}
       >
-        <TodoText content={item.content} isCompleted={isCompleted} />
+        <TodoText
+          content={item.content}
+          isCompleted={isCompleted}
+          isEditing={isEditing}
+        />
+        {!isCompleted && (
+          <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+            <Text style={styles.editSaveButton}>
+              {isEditing ? "저장" : "수정"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </TouchableOpacity>
     </View>
   )
@@ -46,10 +60,16 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: 30,
-    paddingBottom: 30,
+    marginBottom: 30,
   },
-  text: {
+  contentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
+    alignItems: "center",
+  },
+  editSaveButton: {
+    flexShrink: 0,
     color: theme.primary,
-    fontSize: 20,
   },
 })
