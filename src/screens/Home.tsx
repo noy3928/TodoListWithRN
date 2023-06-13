@@ -3,8 +3,8 @@ import { StyleSheet, View, FlatList } from "react-native"
 import { Todos, HomeScreenNavigationProp } from "../shared/types"
 import { getTodos } from "../services"
 
-import Todo from "../components/Todo"
-import UpdateModal from "../components/modals/UpdateModal"
+import Todo from "../components/todo/Todo"
+import UpdateModal from "../components/modal/UpdateModal"
 import ControlBottomBar from "../components/ControlBottomBar"
 
 type HomeProps = {

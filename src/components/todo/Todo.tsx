@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
-import { Todo as TodoType, HomeScreenNavigationProp } from "../shared/types"
+import { Todo as TodoType, HomeScreenNavigationProp } from "../../shared/types"
 
+import theme from "../../shared/theme"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
-import theme from "../shared/theme"
+import TodoText from "./TodoText"
 
 interface Props {
   item: TodoType
@@ -11,11 +12,14 @@ interface Props {
 }
 
 export default function Todo({ item, navigation }: Props) {
+  const [isCompleted, setIsCompleted] = useState(false)
   return (
     <View style={styles.container}>
       <BouncyCheckbox
         fillColor={theme.primary}
-        onPress={(isChecked: boolean) => {}}
+        onPress={() => {
+          setIsCompleted(!isCompleted)
+        }}
         iconStyle={{
           borderRadius: 0,
         }}
@@ -28,7 +32,7 @@ export default function Todo({ item, navigation }: Props) {
           navigation.navigate("Detail", { content: item.content, id: item.id })
         }
       >
-        <Text style={styles.text}>{item.content}</Text>
+        <TodoText content={item.content} isCompleted={isCompleted} />
       </TouchableOpacity>
     </View>
   )
