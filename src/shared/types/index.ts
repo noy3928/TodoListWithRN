@@ -1,8 +1,8 @@
 import { NavigationProp, RouteProp } from "@react-navigation/native"
 
-export type Tasks = Task[]
+export type Todos = Todo[]
 
-export type Task = {
+export type Todo = {
   id: string
   content: string
   updated_at?: string

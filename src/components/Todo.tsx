@@ -1,16 +1,16 @@
 import React from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
-import { Task as TaskType, HomeScreenNavigationProp } from "../shared/types"
+import { Todo as TodoType, HomeScreenNavigationProp } from "../shared/types"
 
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import theme from "../shared/theme"
 
 interface Props {
-  item: TaskType
+  item: TodoType
   navigation: HomeScreenNavigationProp
 }
 
-export default function Task({ item, navigation }: Props) {
+export default function Todo({ item, navigation }: Props) {
   return (
     <View style={styles.container}>
       <BouncyCheckbox

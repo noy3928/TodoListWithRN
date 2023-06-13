@@ -4,13 +4,13 @@ import { StyleSheet, Text, View } from "react-native"
 import theme from "../shared/theme"
 
 interface Props {
-  taskLength: number
+  TodoLength: number
 }
 
-export default function ControlBottomBar({ taskLength }: Props) {
+export default function ControlBottomBar({ TodoLength }: Props) {
   return (
     <View style={styles.bottom}>
-      <Text style={styles.text}>{taskLength} TASKS</Text>
+      <Text style={styles.text}>{TodoLength} TodoS</Text>
       <Text style={styles.text}>ADD NEW +</Text>
     </View>
   )

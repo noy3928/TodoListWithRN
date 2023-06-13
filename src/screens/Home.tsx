@@ -1,35 +1,37 @@
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View, FlatList } from "react-native"
-import { Tasks, HomeScreenNavigationProp } from "../shared/types"
+import { Todos, HomeScreenNavigationProp } from "../shared/types"
+import { getTodos } from "../services"
 
-import Task from "../components/Task"
+import Todo from "../components/Todo"
 import ControlBottomBar from "../components/ControlBottomBar"
 
 import theme from "../shared/theme"
-import axiosInstance from "../services/api"
 
 type HomeProps = {
   navigation: HomeScreenNavigationProp
 }
 
 export default function Home({ navigation }: HomeProps) {
-  const [tasks, setTasks] = useState<Tasks>([])
+  const [Todos, setTodos] = useState<Todos>([])
 
   useEffect(() => {
-    axiosInstance.get("/todo").then(({ data }) => {
-      setTasks(data)
-    })
+    const fetchTodos = async () => {
+      const todos = await getTodos()
+      setTodos(todos)
+    }
+    fetchTodos()
   }, [])
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={tasks}
-        renderItem={({ item }) => <Task item={item} navigation={navigation} />}
+        data={Todos}
+        renderItem={({ item }) => <Todo item={item} navigation={navigation} />}
         keyExtractor={item => item.id}
         style={styles.list}
       />
-      <ControlBottomBar taskLength={tasks.length} />
+      <ControlBottomBar TodoLength={Todos.length} />
     </View>
   )
 }
