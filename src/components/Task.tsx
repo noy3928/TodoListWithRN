@@ -1,14 +1,16 @@
 import React from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
+import { Task as TaskType, HomeScreenNavigationProp } from "../shared/types"
 
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import theme from "../shared/theme"
 
 interface Props {
-  text: string
+  item: TaskType
+  navigation: HomeScreenNavigationProp
 }
 
-export default function Task({ text }: Props) {
+export default function Task({ item, navigation }: Props) {
   return (
     <View style={styles.container}>
       <BouncyCheckbox
@@ -21,8 +23,12 @@ export default function Task({ text }: Props) {
           borderRadius: 0,
         }}
       />
-      <TouchableOpacity>
-        <Text style={styles.text}>{text}</Text>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("Detail", { content: item.content, id: item.id })
+        }
+      >
+        <Text style={styles.text}>{item.content}</Text>
       </TouchableOpacity>
     </View>
   )

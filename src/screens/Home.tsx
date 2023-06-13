@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View, FlatList } from "react-native"
+import { Tasks, HomeScreenNavigationProp } from "../shared/types"
 
 import Task from "../components/Task"
 import ControlBottomBar from "../components/ControlBottomBar"
+
 import theme from "../shared/theme"
 import axiosInstance from "../services/api"
-import { Tasks } from "../shared/types"
 
-export default function Home() {
+type HomeProps = {
+  navigation: HomeScreenNavigationProp
+}
+
+export default function Home({ navigation }: HomeProps) {
   const [tasks, setTasks] = useState<Tasks>([])
 
   useEffect(() => {
@@ -20,14 +25,11 @@ export default function Home() {
     <View style={styles.container}>
       <FlatList
         data={tasks}
-        renderItem={({ item }) => <Task text={item.content} />}
+        renderItem={({ item }) => <Task item={item} navigation={navigation} />}
         keyExtractor={item => item.id}
         style={styles.list}
       />
       <ControlBottomBar taskLength={tasks.length} />
-        <Text style={styles.text}>{tasks.length} TASKS</Text>
-        <Text style={styles.text}>ADD NEW +</Text>
-      </View>
     </View>
   )
 }
@@ -37,13 +39,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 50,
   },
   list: {
     flex: 1,
     flexDirection: "column",
     gap: 30,
     width: "100%",
+    paddingTop: 30,
   },
   bottom: {
     width: "100%",
