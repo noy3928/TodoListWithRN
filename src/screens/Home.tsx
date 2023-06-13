@@ -1,12 +1,44 @@
-import React from "react"
-import { StatusBar } from "expo-status-bar"
-import { StyleSheet, Text, View } from "react-native"
+import React, { useEffect, useState } from "react"
+import { StyleSheet, View, FlatList } from "react-native"
+import { Todos, HomeScreenNavigationProp } from "../shared/types"
+import { getTodos } from "../services"
 
-export default function Home() {
+import Todo from "../components/todo/Todo"
+import TodoModal from "../components/modal/TodoModal"
+import ControlBottomBar from "../components/ControlBottomBar"
+
+type HomeProps = {
+  navigation: HomeScreenNavigationProp
+}
+
+export default function Home({ navigation }: HomeProps) {
+  const [Todos, setTodos] = useState<Todos>([])
+  const [modalVisible, setModalVisible] = useState(false)
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const todos = await getTodos()
+      setTodos(todos)
+    }
+    fetchTodos()
+  }, [])
+
   return (
     <View style={styles.container}>
-      <Text>This is Home</Text>
-      <StatusBar style="auto" />
+      <TodoModal
+        setModalVisible={setModalVisible}
+        modalVisible={modalVisible}
+      />
+      <FlatList
+        data={Todos}
+        renderItem={({ item }) => <Todo item={item} navigation={navigation} />}
+        keyExtractor={item => item.id}
+        style={styles.list}
+      />
+      <ControlBottomBar
+        TodoLength={Todos.length}
+        setModalVisible={setModalVisible}
+      />
     </View>
   )
 }
@@ -16,6 +48,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
+  },
+  list: {
+    flex: 1,
+    flexDirection: "column",
+    gap: 30,
+    width: "100%",
+    paddingTop: 30,
+    paddingBottom: 30,
   },
 })

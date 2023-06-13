@@ -1,8 +1,8 @@
 import axios from "axios"
-import { API_URL } from "@env"
+import config from "react-native-config"
 
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: config.API_URL,
 })
 
 export default axiosInstance
