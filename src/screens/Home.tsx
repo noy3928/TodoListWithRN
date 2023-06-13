@@ -4,7 +4,7 @@ import { Todos, HomeScreenNavigationProp } from "../shared/types"
 import { getTodos } from "../services"
 
 import Todo from "../components/todo/Todo"
-import UpdateModal from "../components/modal/UpdateModal"
+import TodoModal from "../components/modal/TodoModal"
 import ControlBottomBar from "../components/ControlBottomBar"
 
 type HomeProps = {
@@ -25,7 +25,7 @@ export default function Home({ navigation }: HomeProps) {
 
   return (
     <View style={styles.container}>
-      <UpdateModal
+      <TodoModal
         setModalVisible={setModalVisible}
         modalVisible={modalVisible}
       />

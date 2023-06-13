@@ -6,7 +6,6 @@ import {
   Modal,
   Pressable,
   TextInput,
-  TextInputChangeEventData,
 } from "react-native"
 import theme from "../../shared/theme"
 import { addTodo } from "../../services"
@@ -16,7 +15,7 @@ interface Props {
   setModalVisible: (modalVisible: boolean) => void
 }
 
-export default function UpdateModal({ modalVisible, setModalVisible }: Props) {
+export default function TodoModal({ modalVisible, setModalVisible }: Props) {
   const [content, setContent] = useState("")
   const handleAddTodo = async () => {
     if (!content) return
