@@ -1,17 +1,23 @@
 import React from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 
 import theme from "../shared/theme"
 
 interface Props {
   TodoLength: number
+  setModalVisible: (modalVisible: boolean) => void
 }
 
-export default function ControlBottomBar({ TodoLength }: Props) {
+export default function ControlBottomBar({
+  TodoLength,
+  setModalVisible,
+}: Props) {
   return (
     <View style={styles.bottom}>
-      <Text style={styles.text}>{TodoLength} TodoS</Text>
-      <Text style={styles.text}>ADD NEW +</Text>
+      <Text style={styles.text}>{TodoLength} Todos</Text>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.text}>ADD NEW +</Text>
+      </TouchableOpacity>
     </View>
   )
 }

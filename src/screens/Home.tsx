@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react"
-import { StyleSheet, Text, View, FlatList } from "react-native"
+import { StyleSheet, View, FlatList } from "react-native"
 import { Todos, HomeScreenNavigationProp } from "../shared/types"
 import { getTodos } from "../services"
 
 import Todo from "../components/Todo"
+import UpdateModal from "../components/modals/UpdateModal"
 import ControlBottomBar from "../components/ControlBottomBar"
-
-import theme from "../shared/theme"
 
 type HomeProps = {
   navigation: HomeScreenNavigationProp
@@ -14,6 +13,7 @@ type HomeProps = {
 
 export default function Home({ navigation }: HomeProps) {
   const [Todos, setTodos] = useState<Todos>([])
+  const [modalVisible, setModalVisible] = useState(false)
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -25,13 +25,20 @@ export default function Home({ navigation }: HomeProps) {
 
   return (
     <View style={styles.container}>
+      <UpdateModal
+        setModalVisible={setModalVisible}
+        modalVisible={modalVisible}
+      />
       <FlatList
         data={Todos}
         renderItem={({ item }) => <Todo item={item} navigation={navigation} />}
         keyExtractor={item => item.id}
         style={styles.list}
       />
-      <ControlBottomBar TodoLength={Todos.length} />
+      <ControlBottomBar
+        TodoLength={Todos.length}
+        setModalVisible={setModalVisible}
+      />
     </View>
   )
 }
@@ -48,19 +55,5 @@ const styles = StyleSheet.create({
     gap: 30,
     width: "100%",
     paddingTop: 30,
-  },
-  bottom: {
-    width: "100%",
-    borderTopColor: theme.primary,
-    borderTopWidth: 1,
-    height: 100,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 30,
-  },
-  text: {
-    fontSize: 20,
-    color: theme.primary,
   },
 })
