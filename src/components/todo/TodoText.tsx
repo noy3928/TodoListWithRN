@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   completed: {
-    color: `rgba(71, 102, 243, 0.5)`,
+    color: theme.primaryLight,
     fontSize: 20,
     textDecorationLine: "line-through",
   },

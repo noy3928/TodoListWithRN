@@ -3,12 +3,14 @@
     "theme": "light",
     "background": "#FFFFFF",
     "surface": "#FAFAFA",
-    "primary": "#4766f3"
+    "primary": "#4766f3",
+    "primaryLight": "rgba(71, 102, 243, 0.5)"
   },
   "dark": {
     "theme": "light",
     "background": "#FFFFFF",
     "surface": "#FAFAFA",
-    "primary": "#4766f3"
+    "primary": "#4766f3",
+    "primaryLight": "rgba(71, 102, 243, 0.5)"
   }
 }

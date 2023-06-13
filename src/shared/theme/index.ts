@@ -13,6 +13,7 @@ export interface ThemeInterface {
   background: string
   surface: string
   primary: string
+  primaryLight: string
 }
 
 class ThemeStore {
