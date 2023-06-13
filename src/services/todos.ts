@@ -25,6 +25,11 @@ export const updateTodo = ({ id, content }: Todo) => {
   return axiosInstance.put(`/todo/${id}`, { content })
 }
 
-export const deleteTodo = (id: TodoId) => {
-  return axiosInstance.delete(`/todo/${id}`)
+export const deleteTodo = async (id: TodoId) => {
+  try {
+    const response = axiosInstance.delete(`/todo/${id}`)
+    return response
+  } catch (error) {
+    console.error(error)
+  }
 }

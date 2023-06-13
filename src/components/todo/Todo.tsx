@@ -5,6 +5,7 @@ import { Todo as TodoType, HomeScreenNavigationProp } from "../../shared/types"
 import theme from "../../shared/theme"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import TodoText from "./TodoText"
+import TodoActions from "./TodoActions"
 
 interface Props {
   item: TodoType
@@ -41,11 +42,14 @@ export default function Todo({ item, navigation }: Props) {
           isEditing={isEditing}
         />
         {!isCompleted && (
-          <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-            <Text style={styles.editSaveButton}>
-              {isEditing ? "저장" : "수정"}
-            </Text>
-          </TouchableOpacity>
+          <TodoActions
+            isEditing={isEditing}
+            onEditSaveToggle={() => setIsEditing(!isEditing)}
+            onEditingCancel={() => setIsEditing(!isEditing)}
+            onDelete={() => {
+              /* 삭제 */
+            }}
+          />
         )}
       </TouchableOpacity>
     </View>
@@ -71,5 +75,13 @@ const styles = StyleSheet.create({
   editSaveButton: {
     flexShrink: 0,
     color: theme.primary,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  deleteButton: {
+    color: theme.primary,
+    marginLeft: 10,
   },
 })

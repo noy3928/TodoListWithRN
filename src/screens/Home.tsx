@@ -55,5 +55,6 @@ const styles = StyleSheet.create({
     gap: 30,
     width: "100%",
     paddingTop: 30,
+    paddingBottom: 30,
   },
 })

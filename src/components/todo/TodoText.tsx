@@ -1,5 +1,11 @@
 import React from "react"
-import { Text, StyleSheet, TextInput } from "react-native"
+import {
+  Text,
+  StyleSheet,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native"
 import theme from "../../shared/theme"
 
 interface Props {
@@ -44,7 +50,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderWidth: 1,
     borderColor: "transparent",
-    maxWidth: "80%",
+    maxWidth: "70%",
   },
   completed: {
     color: theme.primaryLight,
@@ -53,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderWidth: 1,
     borderColor: "transparent",
-    maxWidth: "80%",
+    maxWidth: "70%",
   },
   input: {
     color: theme.primary,
@@ -61,5 +67,6 @@ const styles = StyleSheet.create({
     borderColor: theme.primary,
     borderWidth: 1,
     padding: 5,
+    maxWidth: "70%",
   },
 })
