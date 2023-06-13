@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View, FlatList } from "react-native"
 
 import Task from "../components/Task"
+import ControlBottomBar from "../components/ControlBottomBar"
 import theme from "../shared/theme"
 import axiosInstance from "../services/api"
 import { Tasks } from "../shared/types"
@@ -23,7 +24,7 @@ export default function Home() {
         keyExtractor={item => item.id}
         style={styles.list}
       />
-      <View style={styles.bottom}>
+      <ControlBottomBar taskLength={tasks.length} />
         <Text style={styles.text}>{tasks.length} TASKS</Text>
         <Text style={styles.text}>ADD NEW +</Text>
       </View>
