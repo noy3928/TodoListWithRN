@@ -18,7 +18,6 @@ interface Props {
 export default function Todo({ item, navigation }: Props) {
   const dispatch = useDispatch()
   const [isCompleted, setIsCompleted] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
 
   const handleDelete = () => {
     const { deleteTodo } = todoSlice.todoActions
@@ -39,26 +38,20 @@ export default function Todo({ item, navigation }: Props) {
           borderRadius: 0,
         }}
       />
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("Detail", { content: item.content, id: item.id })
-        }
-        style={styles.contentContainer}
-      >
-        <TodoText
-          content={item.content}
-          isCompleted={isCompleted}
-          isEditing={isEditing}
-        />
-        {!isCompleted && (
-          <TodoActions
-            isEditing={isEditing}
-            onEditSaveToggle={() => setIsEditing(!isEditing)}
-            onEditingCancel={() => setIsEditing(!isEditing)}
-            onDelete={handleDelete}
-          />
-        )}
-      </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Detail", {
+              content: item.content,
+              id: item.id,
+            })
+          }
+          style={styles.textContainer}
+        >
+          <TodoText content={item.content} isCompleted={isCompleted} />
+        </TouchableOpacity>
+        {!isCompleted && <TodoActions item={item} onDelete={handleDelete} />}
+      </View>
     </View>
   )
 }
@@ -78,6 +71,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     alignItems: "center",
+  },
+  textContainer: {
+    flex: 1,
+    maxWidth: "80%",
   },
   editSaveButton: {
     flexShrink: 0,

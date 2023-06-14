@@ -5,6 +5,7 @@ import { HomeScreenNavigationProp } from "../shared/types"
 import { useDispatch } from "react-redux"
 import { useSelector } from "react-redux"
 import * as todoSlice from "../store/slices/todos"
+import * as modalSlice from "../store/slices/modal"
 
 import Todo from "../components/todo/Todo"
 import TodoModal from "../components/modal/TodoModal"
@@ -16,8 +17,8 @@ type HomeProps = {
 
 export default function Home({ navigation }: HomeProps) {
   const dispatch = useDispatch()
-  const [modalVisible, setModalVisible] = useState(false)
   const { todos, isLoading, error } = useSelector(todoSlice.todoSelector.all)
+  const { modalType } = useSelector(modalSlice.modalSelector.all)
 
   useEffect(() => {
     const { fetchTodos } = todoSlice.todoActions
@@ -26,20 +27,14 @@ export default function Home({ navigation }: HomeProps) {
 
   return (
     <View style={styles.container}>
-      <TodoModal
-        setModalVisible={setModalVisible}
-        modalVisible={modalVisible}
-      />
+      <TodoModal modalType={modalType} />
       <FlatList
         data={todos}
         renderItem={({ item }) => <Todo item={item} navigation={navigation} />}
         keyExtractor={item => item.id}
         style={styles.list}
       />
-      <ControlBottomBar
-        TodoLength={todos.length}
-        setModalVisible={setModalVisible}
-      />
+      <ControlBottomBar TodoLength={todos.length} />
     </View>
   )
 }

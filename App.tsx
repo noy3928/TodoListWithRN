@@ -33,7 +33,6 @@ export default function App() {
             component={Detail}
             options={{
               headerTitle: "Detail Page",
-              headerRight: () => <Text>수정하기</Text>,
             }}
           />
         </Stack.Navigator>

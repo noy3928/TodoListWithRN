@@ -2,20 +2,19 @@ import React from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 
 import theme from "../shared/theme"
+import { useHandleOpenModal } from "../services/hooks"
 
 interface Props {
   TodoLength: number
-  setModalVisible: (modalVisible: boolean) => void
 }
 
-export default function ControlBottomBar({
-  TodoLength,
-  setModalVisible,
-}: Props) {
+export default function ControlBottomBar({ TodoLength }: Props) {
+  const handleOpenModal = useHandleOpenModal()
+
   return (
     <View style={styles.bottom}>
       <Text style={styles.text}>{TodoLength} Todos</Text>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity onPress={() => handleOpenModal("ADD")}>
         <Text style={styles.text}>ADD NEW +</Text>
       </TouchableOpacity>
     </View>

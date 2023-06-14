@@ -1,41 +1,30 @@
 import React from "react"
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
 import theme from "../../shared/theme"
+import { useHandleOpenModal } from "../../services/hooks"
+import { Todo } from "../../shared/types"
 
 interface Props {
-  isEditing: boolean
-  onEditSaveToggle: () => void
-  onEditingCancel: () => void
+  item: Todo
   onDelete: () => void
 }
 
-const TodoActions = ({
-  isEditing,
-  onEditSaveToggle,
-  onEditingCancel,
-  onDelete,
-}: Props) => {
+const TodoActions = ({ item, onDelete }: Props) => {
+  const handleOpenModal = useHandleOpenModal()
   return (
     <View style={styles.buttonContainer}>
-      {isEditing ? (
-        <>
-          <TouchableOpacity onPress={onEditSaveToggle}>
-            <Text style={styles.editSaveButton}>저장</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onEditingCancel}>
-            <Text style={styles.editSaveButton}>취소</Text>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <>
-          <TouchableOpacity onPress={onEditSaveToggle}>
-            <Text style={styles.editSaveButton}>수정</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onDelete}>
-            <Text style={styles.deleteButton}>삭제</Text>
-          </TouchableOpacity>
-        </>
-      )}
+      <>
+        <TouchableOpacity
+          onPress={() =>
+            handleOpenModal("EDIT", { content: item.content, id: item.id })
+          }
+        >
+          <Text style={styles.editSaveButton}>수정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onDelete}>
+          <Text style={styles.deleteButton}>삭제</Text>
+        </TouchableOpacity>
+      </>
     </View>
   )
 }
