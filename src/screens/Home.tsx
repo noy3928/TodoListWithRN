@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { StyleSheet, View, FlatList } from "react-native"
-import { Todos, HomeScreenNavigationProp } from "../shared/types"
-import { getTodos } from "../services"
+import { HomeScreenNavigationProp } from "../shared/types"
+
+import { useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
+import * as todoSlice from "../store/slices/todos"
 
 import Todo from "../components/todo/Todo"
 import TodoModal from "../components/modal/TodoModal"
@@ -12,15 +15,13 @@ type HomeProps = {
 }
 
 export default function Home({ navigation }: HomeProps) {
-  const [Todos, setTodos] = useState<Todos>([])
+  const dispatch = useDispatch()
   const [modalVisible, setModalVisible] = useState(false)
+  const { todos, isLoading, error } = useSelector(todoSlice.todoSelector.all)
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      const todos = await getTodos()
-      setTodos(todos)
-    }
-    fetchTodos()
+    const { fetchTodos } = todoSlice.todoActions
+    dispatch(fetchTodos())
   }, [])
 
   return (
@@ -30,13 +31,13 @@ export default function Home({ navigation }: HomeProps) {
         modalVisible={modalVisible}
       />
       <FlatList
-        data={Todos}
+        data={todos}
         renderItem={({ item }) => <Todo item={item} navigation={navigation} />}
         keyExtractor={item => item.id}
         style={styles.list}
       />
       <ControlBottomBar
-        TodoLength={Todos.length}
+        TodoLength={todos.length}
         setModalVisible={setModalVisible}
       />
     </View>
