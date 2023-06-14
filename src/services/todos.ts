@@ -3,7 +3,7 @@ import { Todo } from "../shared/types"
 
 type TodoId = Pick<Todo, "id">
 
-export const getTodos = async () => {
+export const fetchTodos = async () => {
   try {
     const response = await axiosInstance.get("/todo")
     return response.data
