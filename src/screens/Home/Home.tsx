@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 import * as todoSlice from "../../store/slices/todos"
 import * as modalSlice from "../../store/slices/modal"
 
-import HomeView from "./HomeView"
+import HomeView from "./view/HomeView"
 
 type HomeProps = {
   navigation: HomeScreenNavigationProp

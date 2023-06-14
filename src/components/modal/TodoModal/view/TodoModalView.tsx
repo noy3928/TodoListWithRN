@@ -7,11 +7,11 @@ import {
   Pressable,
   TextInput,
 } from "react-native"
-import theme from "../../../shared/theme"
+import theme from "../../../../shared/theme"
 
-import { ModalType } from "../../../shared/types"
+import { ModalType } from "../../../../shared/types"
 
-import ActionButton from "./ActionButton"
+import ActionButtonView from "./ActionButtonView"
 
 interface Props {
   modalType: ModalType
@@ -50,7 +50,7 @@ export default function TodoModalView({
             <Pressable style={styles.button} onPress={handleCloseModal}>
               <Text style={styles.textStyle}>취소</Text>
             </Pressable>
-            <ActionButton
+            <ActionButtonView
               modalType={modalType}
               handleAddTodo={handleAddTodo}
               handleEditTodo={handleUpdateTodo}

@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux"
 import * as modalSlice from "../../store/slices/modal"
 import * as todoSlice from "../../store/slices/todos"
 
-import DetailView from "./DetailView"
+import DetailView from "./view/DetailView"
 
 import { useHandleOpenModal } from "../../services/hooks/useHandleOpenModal"
 

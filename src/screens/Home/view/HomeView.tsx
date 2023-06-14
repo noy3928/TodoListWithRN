@@ -1,12 +1,12 @@
 import React from "react"
 import { StyleSheet, View, FlatList, RefreshControl, Text } from "react-native"
-import { HomeScreenNavigationProp } from "../../shared/types"
+import { HomeScreenNavigationProp } from "../../../shared/types"
 
-import { Todos, ModalType } from "../../shared/types"
+import { Todos, ModalType } from "../../../shared/types"
 
-import Todo from "../../components/todo/Todo/Todo"
-import TodoModal from "../../components/modal/TodoModal/TodoModal"
-import ControlBottomBar from "../../components/ControlBottomBar"
+import Todo from "../../../components/todo/Todo/Todo"
+import TodoModal from "../../../components/modal/TodoModal"
+import ControlBottomBar from "../../../components/ui/ControlBottomBar"
 
 type HomeProps = {
   navigation: HomeScreenNavigationProp

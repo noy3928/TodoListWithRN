@@ -1,12 +1,12 @@
-import React, { useState } from "react"
+import React from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { ModalType } from "../../shared/types"
+import { ModalType } from "../../../shared/types"
 
 import BouncyCheckbox from "react-native-bouncy-checkbox"
-import TodoText from "../../components/todo/TodoText"
-import TodoModal from "../../components/modal/TodoModal/TodoModal"
+import TodoText from "../../../components/todo/TodoText"
+import TodoModal from "../../../components/modal/TodoModal"
 
-import theme from "../../shared/theme"
+import theme from "../../../shared/theme"
 
 type DetailProps = {
   handleCompleteStatus: () => void

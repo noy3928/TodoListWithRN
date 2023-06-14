@@ -6,7 +6,7 @@ import { ModalType } from "../../../shared/types"
 import * as todoSlice from "../../../store/slices/todos"
 import * as modalSlice from "../../../store/slices/modal"
 
-import TodoModalView from "./TodoModalView"
+import TodoModalView from "./view/TodoModalView"
 
 interface Props {
   modalType: ModalType

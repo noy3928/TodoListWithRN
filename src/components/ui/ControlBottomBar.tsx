@@ -1,8 +1,8 @@
 import React from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 
-import theme from "../shared/theme"
-import { useHandleOpenModal } from "../services/hooks"
+import theme from "../../shared/theme"
+import { useHandleOpenModal } from "../../services/hooks"
 
 interface Props {
   TodoLength: number

@@ -8,7 +8,7 @@ import { useHandleOpenModal } from "../../../services/hooks"
 import { useDispatch } from "react-redux"
 import * as todoSlice from "../../../store/slices/todos"
 
-import TodoView from "./TodoView"
+import TodoView from "./view/TodoView"
 
 interface Props {
   item: TodoType
