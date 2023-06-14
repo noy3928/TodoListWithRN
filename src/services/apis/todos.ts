@@ -1,5 +1,5 @@
-import axiosInstance from "./api"
-import { Todo } from "../shared/types"
+import axiosInstance from "./baseApi"
+import { Todo } from "../../shared/types"
 
 export const fetchTodos = async () => {
   try {

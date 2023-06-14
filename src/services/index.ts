@@ -1,2 +1,1 @@
-export * from "./api"
-export * from "./todos"
+export * from "./apis"

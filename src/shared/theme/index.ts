@@ -1,6 +1,9 @@
 import { Appearance } from "react-native"
 
-import { THEME } from "../constants"
+export const THEME = {
+  LIGHT: "light",
+  DARK: "dark",
+}
 
 export const themeJson: ITheme = require("./theme.json")
 
