@@ -5,8 +5,8 @@ import { RootStackParamList } from "./src/shared/types"
 import { Provider } from "react-redux"
 import createStore from "./src/store"
 
-import Home from "./src/screens/Home"
-import Detail from "./src/screens/Detail"
+import Home from "./src/screens/Home/Home"
+import Detail from "./src/screens/Detail/Detail"
 import theme from "./src/shared/theme"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
