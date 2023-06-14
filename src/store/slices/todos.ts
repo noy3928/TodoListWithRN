@@ -7,11 +7,13 @@ const initialState: {
   todos: Todos
   error: any
   editInfo: { content: string; id: string }
+  displayCount: number
 } = {
   isLoading: false,
   todos: [],
   error: null,
   editInfo: { content: "", id: "" },
+  displayCount: 10,
 }
 
 export const slice = createSlice({
@@ -87,12 +89,15 @@ export const slice = createSlice({
       })
       state.todos = newState
     },
+    increaseDisplayCount: state => {
+      state.displayCount += 10
+    },
   },
 })
 
 const selectAllState = createSelector(
   (state: RootState) => state.todos.isLoading,
-  (state: RootState) => state.todos.todos,
+  (state: RootState) => state.todos.todos.slice(0, state.todos.displayCount),
   (state: RootState) => state.todos.error,
   (state: RootState) => state.todos.editInfo,
   (isLoading, todos, error, editInfo) => {

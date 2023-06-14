@@ -25,6 +25,11 @@ export default function Home({ navigation }: HomeProps) {
     dispatch(fetchTodos())
   }, [])
 
+  const handleDisplayMore = () => {
+    const { increaseDisplayCount } = todoSlice.todoActions
+    dispatch(increaseDisplayCount())
+  }
+
   return (
     <View style={styles.container}>
       <TodoModal modalType={modalType} />
@@ -33,6 +38,8 @@ export default function Home({ navigation }: HomeProps) {
         renderItem={({ item }) => <Todo item={item} navigation={navigation} />}
         keyExtractor={item => item.id}
         style={styles.list}
+        onEndReached={handleDisplayMore}
+        onEndReachedThreshold={0.2}
       />
       <ControlBottomBar TodoLength={todos.length} />
     </View>
