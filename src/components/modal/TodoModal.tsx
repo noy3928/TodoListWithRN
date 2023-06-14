@@ -8,7 +8,9 @@ import {
   TextInput,
 } from "react-native"
 import theme from "../../shared/theme"
-import { addTodo } from "../../services"
+
+import { useDispatch } from "react-redux"
+import * as todoSlice from "../../store/slices/todos"
 
 interface Props {
   modalVisible: boolean
@@ -16,12 +18,17 @@ interface Props {
 }
 
 export default function TodoModal({ modalVisible, setModalVisible }: Props) {
+  const dispatch = useDispatch()
   const [content, setContent] = useState("")
+
+  // TODO : 글작성시 로딩 처리 및 에러 처리하기
   const handleAddTodo = async () => {
     if (!content) return
-    await addTodo(content)
+    const { addTodo } = todoSlice.todoActions
+    await dispatch(addTodo(content))
     setModalVisible(!modalVisible)
   }
+
   return (
     <Modal
       animationType="fade"

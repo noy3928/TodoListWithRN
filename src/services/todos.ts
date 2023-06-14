@@ -15,7 +15,7 @@ export const fetchTodos = async () => {
 export const addTodo = async (content: string) => {
   try {
     const response = await axiosInstance.post("/todo/", { content })
-    return response
+    return response.data
   } catch (error) {
     console.error(error)
   }

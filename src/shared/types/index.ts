@@ -20,3 +20,8 @@ export type HomeScreenNavigationProp = NavigationProp<
 >
 
 export type DetailScreenRouteProp = RouteProp<RootStackParamList, "Detail">
+
+export type ActionType = {
+  type: string
+  payload: string
+}
