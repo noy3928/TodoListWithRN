@@ -12,6 +12,8 @@ $ yarn install
 $ yarn ios or yarn android
 ```
 
+\*[Challeng Points를 참고해주세요.](https://github.com/noy3928/TodoListWithRN#challenge-points)
+
 <br>
 
 ## 사용한 패키지와 버전
@@ -121,5 +123,6 @@ $ yarn ios or yarn android
 ## Challenge Points
 
 - env 설정을 제대로 진행하지 못했습니다. react-native-config를 통해 env를 사용할 수 있도록 구현하려고 하였지만, expo 실행 환경과 native 실행환경에 대한 이해부족으로 인해 진행하지 못했습니다. xcode에서 config 파일을 설정하고, develop 환경에서 실행하는 run script를 작성하였지만, 실행이 되지 않았습니다.
+  - src/services/apis/baseApi.ts 파일에 직접 api 주소를 입력해주어야 정상 작동합니다.
 - 수정하기 기능을 완성하지 못했습니다. 기존의 다른 api와 마찬가지로 api 요청을 보내는 작업을 진행했지만, 수정이 되지 않았습니다. 클라이언트쪽에서 어떤 문제가 있는 것인지 확인하기 위해 log를 찍어보고, 요청을 보내는 부분까지 확인을 해봤지만 문제가 없다고 판단되었습니다. 추후에 다시 확인해보려하였지만, 시간이 부족해 완료하지 못했습니다.
 - 앱을 껐다 켜도 완료한 상태가 그대로 남아있도록 하는 기능을 완료하지 못했습니다. redux-persist와 asyncStorage를 활용하려고 하였으나, expo 환경에서 제대로 실행되지 않는 부분이 있었습니다. 해당 부분도 마찬가지로 native 실행환경에 대한 이해부족으로 완료하지 못했습니다.
