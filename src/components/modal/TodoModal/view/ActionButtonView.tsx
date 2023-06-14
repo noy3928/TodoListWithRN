@@ -1,8 +1,8 @@
 import React from "react"
 import { StyleSheet, Text, Pressable } from "react-native"
-import theme from "../../shared/theme"
+import theme from "../../../../shared/theme"
 
-import { ModalType } from "../../shared/types"
+import { ModalType } from "../../../../shared/types"
 
 interface Props {
   modalType: ModalType
@@ -10,7 +10,7 @@ interface Props {
   handleEditTodo: () => void
 }
 
-export default function TodoModal({
+export default function ActionButtonView({
   modalType,
   handleAddTodo,
   handleEditTodo,

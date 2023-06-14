@@ -1,35 +1,28 @@
-import React, { useState } from "react"
+import React from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { DetailScreenRouteProp } from "../shared/types"
-import { useSelector } from "react-redux"
-import { useDispatch } from "react-redux"
-import * as modalSlice from "../store/slices/modal"
-import * as todoSlice from "../store/slices/todos"
+import { ModalType } from "../../../shared/types"
 
 import BouncyCheckbox from "react-native-bouncy-checkbox"
-import TodoText from "../components/todo/TodoText"
-import TodoModal from "../components/modal/TodoModal"
+import TodoText from "../../../components/todo/TodoText"
+import TodoModal from "../../../components/modal/TodoModal"
 
-import theme from "../shared/theme"
-import { useHandleOpenModal } from "../services/hooks/useHandleOpenModal"
+import theme from "../../../shared/theme"
 
 type DetailProps = {
-  route: DetailScreenRouteProp
+  handleCompleteStatus: () => void
+  isCompleted: boolean | undefined
+  content: string
+  modalType: ModalType
+  handleOpenEditModal: () => void
 }
 
-export default function Detail({ route }: DetailProps) {
-  const dispatch = useDispatch()
-  const { content, id, isCompleted: initCompleteStatus } = route.params
-  const [isCompleted, setIsCompleted] = useState(initCompleteStatus)
-  const { modalType } = useSelector(modalSlice.modalSelector.all)
-  const handleOpenModal = useHandleOpenModal()
-
-  const handleCompleteStatus = () => {
-    const { updateCompleteStatus } = todoSlice.todoActions
-    setIsCompleted(!isCompleted)
-    dispatch(updateCompleteStatus(id))
-  }
-
+export default function DetailView({
+  handleCompleteStatus,
+  isCompleted,
+  content,
+  modalType,
+  handleOpenEditModal,
+}: DetailProps) {
   return (
     <View style={styles.container}>
       <TodoModal modalType={modalType} />
@@ -49,7 +42,7 @@ export default function Detail({ route }: DetailProps) {
       </View>
       <TouchableOpacity
         style={styles.bottom}
-        onPress={() => handleOpenModal("EDIT", { content, id })}
+        onPress={handleOpenEditModal}
         disabled={isCompleted}
       >
         <Text style={isCompleted ? styles.textDisabled : styles.text}>

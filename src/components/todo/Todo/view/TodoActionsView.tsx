@@ -1,24 +1,17 @@
 import React from "react"
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
-import theme from "../../shared/theme"
-import { useHandleOpenModal } from "../../services/hooks"
-import { Todo } from "../../shared/types"
+import theme from "../../../shared/theme"
 
 interface Props {
-  item: Todo
   onDelete: () => void
+  handleOpenEditModal: () => void
 }
 
-const TodoActions = ({ item, onDelete }: Props) => {
-  const handleOpenModal = useHandleOpenModal()
+const TodoActions = ({ onDelete, handleOpenEditModal }: Props) => {
   return (
     <View style={styles.buttonContainer}>
       <>
-        <TouchableOpacity
-          onPress={() =>
-            handleOpenModal("EDIT", { content: item.content, id: item.id })
-          }
-        >
+        <TouchableOpacity onPress={handleOpenEditModal}>
           <Text style={styles.editSaveButton}>수정</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onDelete}>

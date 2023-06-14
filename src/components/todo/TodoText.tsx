@@ -1,11 +1,5 @@
 import React from "react"
-import {
-  Text,
-  StyleSheet,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native"
+import { Text, StyleSheet } from "react-native"
 import theme from "../../shared/theme"
 
 interface Props {
