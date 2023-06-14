@@ -8,7 +8,7 @@ import * as todoSlice from "../store/slices/todos"
 
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import TodoText from "../components/todo/TodoText"
-import TodoModal from "../components/modal/TodoModal"
+import TodoModal from "../components/modal/TodoModal/TodoModal"
 
 import theme from "../shared/theme"
 import { useHandleOpenModal } from "../services/hooks/useHandleOpenModal"

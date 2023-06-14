@@ -7,57 +7,29 @@ import {
   Pressable,
   TextInput,
 } from "react-native"
-import theme from "../../shared/theme"
+import theme from "../../../shared/theme"
 
-import { useDispatch } from "react-redux"
-import { useSelector } from "react-redux"
+import { ModalType } from "../../../shared/types"
 
-import { ModalType } from "../../shared/types"
-import * as todoSlice from "../../store/slices/todos"
-import * as modalSlice from "../../store/slices/modal"
-
-import ActionButton from "./ActionButton"
+import ActionButton from "../ActionButton"
 
 interface Props {
   modalType: ModalType
+  handleCloseModal: () => void
+  handleAddTodo: () => void
+  handleUpdateTodo: () => void
+  content: string
+  onChangeContent: (value: string) => void
 }
 
-export default function TodoModal({ modalType }: Props) {
-  const dispatch = useDispatch()
-  const { editInfo } = useSelector(todoSlice.todoSelector.all)
-  const [content, setContent] = useState(
-    modalType == "EDIT" ? editInfo.content : ""
-  )
-
-  useEffect(() => {
-    setContent(modalType == "EDIT" ? editInfo.content : "")
-  }, [modalType, editInfo])
-
-  const handleCloseModal = () => {
-    const { closeModal } = modalSlice.modalActions
-    dispatch(closeModal())
-  }
-
-  // TODO : 글작성시 로딩 처리 및 에러 처리하기
-  const handleAddTodo = async () => {
-    if (!content) return
-    const { addTodo } = todoSlice.todoActions
-    await dispatch(addTodo(content))
-    handleCloseModal()
-  }
-
-  const handleUpdateTodo = async () => {
-    if (!content) return
-    const { updateTodo } = todoSlice.todoActions
-    await dispatch(
-      updateTodo({
-        id: editInfo.id,
-        content,
-      })
-    )
-    handleCloseModal()
-  }
-
+export default function TodoModalView({
+  modalType,
+  content,
+  onChangeContent,
+  handleCloseModal,
+  handleAddTodo,
+  handleUpdateTodo,
+}: Props) {
   return (
     <Modal
       animationType="fade"
@@ -69,7 +41,7 @@ export default function TodoModal({ modalType }: Props) {
         <View style={styles.modalView}>
           <TextInput
             style={styles.textInput}
-            onChangeText={(value: string) => setContent(value)}
+            onChangeText={onChangeContent}
             value={content}
             multiline={true}
             numberOfLines={5}
