@@ -11,7 +11,7 @@ import theme from "../../../shared/theme"
 
 import { ModalType } from "../../../shared/types"
 
-import ActionButton from "../ActionButton"
+import ActionButton from "./ActionButton"
 
 interface Props {
   modalType: ModalType

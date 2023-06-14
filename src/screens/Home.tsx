@@ -7,7 +7,7 @@ import { useSelector } from "react-redux"
 import * as todoSlice from "../store/slices/todos"
 import * as modalSlice from "../store/slices/modal"
 
-import Todo from "../components/todo/Todo"
+import Todo from "../components/todo/Todo/Todo"
 import TodoModal from "../components/modal/TodoModal/TodoModal"
 import ControlBottomBar from "../components/ControlBottomBar"
 
