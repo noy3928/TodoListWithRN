@@ -5,8 +5,6 @@ import { RootStackParamList } from "./src/shared/types"
 import { Provider } from "react-redux"
 import createStore from "./src/store"
 
-import { Text } from "react-native"
-
 import Home from "./src/screens/Home"
 import Detail from "./src/screens/Detail"
 import theme from "./src/shared/theme"

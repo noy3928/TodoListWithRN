@@ -26,7 +26,7 @@ export const slice = createSlice({
         ...item,
         isCompleted: false,
       }))
-      state.todos = state.todos.concat(newState)
+      state.todos = newState
     },
     fetchTodoFailure: (state, { payload: error }) => {
       state.isLoading = false
@@ -91,6 +91,9 @@ export const slice = createSlice({
     },
     increaseDisplayCount: state => {
       state.displayCount += 10
+    },
+    resetDisplayCount: state => {
+      state.displayCount = initialState.displayCount
     },
   },
 })
