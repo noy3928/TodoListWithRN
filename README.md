@@ -2,15 +2,23 @@
 
 1. root폴더에 .env 파일을 생성합니다.
 
-   > API_URL={API_URL}
+```
+API_URL={API_URL}
+```
 
 2. 의존성 패키지를 설치합니다.
 
-   > $ yarn install
+```
+$ yarn install
+```
 
 3. 프로젝트를 실행합니다.
 
-   > $ yarn ios or yarn android
+```
+$ yarn ios or yarn android
+```
+
+<br>
 
 ## 사용한 패키지와 버전
 
@@ -27,6 +35,8 @@
     "jest": "^29.5.0",
     "typescript": "^5.1.3"
 ```
+
+<br>
 
 ## 폴더구조
 
