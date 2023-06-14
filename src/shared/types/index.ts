@@ -5,13 +5,14 @@ export type Todos = Todo[]
 export type Todo = {
   id: string
   content: string
+  isCompleted?: boolean
   updated_at?: string
   created_at?: string
 }
 
 export type RootStackParamList = {
   Home: undefined
-  Detail: { id: string; content: string }
+  Detail: { id: string; content: string; isCompleted?: boolean }
 }
 
 export type HomeScreenNavigationProp = NavigationProp<

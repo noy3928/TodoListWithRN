@@ -20,8 +20,11 @@ export const slice = createSlice({
   reducers: {
     fetchTodoSuccess: (state, action: PayloadAction<Todos>) => {
       state.isLoading = true
-      const newState = state.todos.concat(action.payload)
-      state.todos = newState
+      const newState = action.payload.map(item => ({
+        ...item,
+        isCompleted: false,
+      }))
+      state.todos = state.todos.concat(newState)
     },
     fetchTodoFailure: (state, { payload: error }) => {
       state.isLoading = false
@@ -73,6 +76,16 @@ export const slice = createSlice({
     },
     updateTodo: (state, { payload: todo }) => {
       state.isLoading = false
+    },
+    updateCompleteStatus: (state, { payload: id }) => {
+      state.isLoading = true
+      const newState = state.todos.map(item => {
+        if (item.id === id) {
+          return { ...item, isCompleted: !item.isCompleted }
+        }
+        return item
+      })
+      state.todos = newState
     },
   },
 })

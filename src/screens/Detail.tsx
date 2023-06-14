@@ -2,7 +2,9 @@ import React, { useState } from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { DetailScreenRouteProp } from "../shared/types"
 import { useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import * as modalSlice from "../store/slices/modal"
+import * as todoSlice from "../store/slices/todos"
 
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import TodoText from "../components/todo/TodoText"
@@ -16,18 +18,26 @@ type DetailProps = {
 }
 
 export default function Detail({ route }: DetailProps) {
-  const { content, id } = route.params
-  const [isCompleted, setIsCompleted] = useState(false)
+  const dispatch = useDispatch()
+  const { content, id, isCompleted: initCompleteStatus } = route.params
+  const [isCompleted, setIsCompleted] = useState(initCompleteStatus)
   const { modalType } = useSelector(modalSlice.modalSelector.all)
   const handleOpenModal = useHandleOpenModal()
+
+  const handleCompleteStatus = () => {
+    const { updateCompleteStatus } = todoSlice.todoActions
+    setIsCompleted(!isCompleted)
+    dispatch(updateCompleteStatus(id))
+  }
 
   return (
     <View style={styles.container}>
       <TodoModal modalType={modalType} />
       <View style={styles.centerContent}>
         <BouncyCheckbox
+          isChecked={isCompleted}
           fillColor={theme.primary}
-          onPress={() => setIsCompleted(!isCompleted)}
+          onPress={handleCompleteStatus}
           iconStyle={{
             borderRadius: 0,
           }}

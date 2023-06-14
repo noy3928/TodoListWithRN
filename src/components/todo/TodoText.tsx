@@ -10,7 +10,7 @@ import theme from "../../shared/theme"
 
 interface Props {
   content: string
-  isCompleted: boolean
+  isCompleted?: boolean
   isDetail?: boolean
 }
 

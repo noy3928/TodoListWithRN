@@ -17,20 +17,24 @@ interface Props {
 
 export default function Todo({ item, navigation }: Props) {
   const dispatch = useDispatch()
-  const [isCompleted, setIsCompleted] = useState(false)
 
   const handleDelete = () => {
     const { deleteTodo } = todoSlice.todoActions
     dispatch(deleteTodo(item.id))
   }
 
+  const handleCompletedStatus = () => {
+    const { updateCompleteStatus } = todoSlice.todoActions
+    dispatch(updateCompleteStatus(item.id))
+  }
+
   return (
     <View style={styles.container}>
       <BouncyCheckbox
+        key={item.isCompleted?.toString()}
+        isChecked={item.isCompleted}
         fillColor={theme.primary}
-        onPress={() => {
-          setIsCompleted(!isCompleted)
-        }}
+        onPress={handleCompletedStatus}
         iconStyle={{
           borderRadius: 0,
         }}
@@ -44,13 +48,16 @@ export default function Todo({ item, navigation }: Props) {
             navigation.navigate("Detail", {
               content: item.content,
               id: item.id,
+              isCompleted: item.isCompleted,
             })
           }
           style={styles.textContainer}
         >
-          <TodoText content={item.content} isCompleted={isCompleted} />
+          <TodoText content={item.content} isCompleted={item.isCompleted} />
         </TouchableOpacity>
-        {!isCompleted && <TodoActions item={item} onDelete={handleDelete} />}
+        {!item.isCompleted && (
+          <TodoActions item={item} onDelete={handleDelete} />
+        )}
       </View>
     </View>
   )
