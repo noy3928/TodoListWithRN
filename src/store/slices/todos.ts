@@ -32,8 +32,19 @@ export const slice = createSlice({
       state.isLoading = false
       state.error = error
     },
-    // payload를 받아서 saga에 전달해주는 addTodo
     addTodo: (state, { payload: todo }) => {
+      state.isLoading = false
+    },
+    deleteTodoSuccess: (state, { payload: id }) => {
+      state.isLoading = true
+      const newState = state.todos.filter(todo => todo.id !== id)
+      state.todos = newState
+    },
+    deleteTodoFailure: (state, { payload: error }) => {
+      state.isLoading = false
+      state.error = error
+    },
+    deleteTodo: (state, { payload: id }) => {
       state.isLoading = false
     },
   },

@@ -2,6 +2,9 @@ import React, { useState } from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 import { Todo as TodoType, HomeScreenNavigationProp } from "../../shared/types"
 
+import { useDispatch } from "react-redux"
+import * as todoSlice from "../../store/slices/todos"
+
 import theme from "../../shared/theme"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import TodoText from "./TodoText"
@@ -13,8 +16,14 @@ interface Props {
 }
 
 export default function Todo({ item, navigation }: Props) {
+  const dispatch = useDispatch()
   const [isCompleted, setIsCompleted] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+
+  const handleDelete = () => {
+    const { deleteTodo } = todoSlice.todoActions
+    dispatch(deleteTodo(item.id))
+  }
 
   return (
     <View style={styles.container}>
@@ -46,9 +55,7 @@ export default function Todo({ item, navigation }: Props) {
             isEditing={isEditing}
             onEditSaveToggle={() => setIsEditing(!isEditing)}
             onEditingCancel={() => setIsEditing(!isEditing)}
-            onDelete={() => {
-              /* 삭제 */
-            }}
+            onDelete={handleDelete}
           />
         )}
       </TouchableOpacity>

@@ -25,9 +25,20 @@ function* handleAddTodos(action: ActionType): Generator<any, any, any> {
   }
 }
 
+function* handleDeleteTodos(action: ActionType): Generator<any, any, any> {
+  const { deleteTodoSuccess, deleteTodoFailure } = todoActions
+  try {
+    const todos = yield call(API.deleteTodo, action.payload)
+    yield put(deleteTodoSuccess(todos))
+  } catch (err) {
+    yield put(deleteTodoFailure(err))
+  }
+}
+
 export default function* watchTodos() {
-  const { fetchTodos, addTodo } = todoActions
+  const { fetchTodos, addTodo, deleteTodo } = todoActions
 
   yield takeEvery(fetchTodos, handleFetchTodos)
   yield takeEvery(addTodo, handleAddTodos)
+  yield takeEvery(deleteTodo, handleDeleteTodos)
 }
