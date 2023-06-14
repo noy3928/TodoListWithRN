@@ -20,7 +20,7 @@ export const slice = createSlice({
   reducers: {
     fetchTodoSuccess: (state, action: PayloadAction<Todos>) => {
       state.isLoading = true
-      const newState = action.payload.map(item => ({
+      const newState = action.payload.reverse().map(item => ({
         ...item,
         isCompleted: false,
       }))
@@ -35,7 +35,7 @@ export const slice = createSlice({
     },
     addTodoSuccess: (state, { payload: todo }) => {
       state.isLoading = true
-      state.todos.push(todo)
+      state.todos.unshift(todo)
     },
     addTodoFailure: (state, { payload: error }) => {
       state.isLoading = false
