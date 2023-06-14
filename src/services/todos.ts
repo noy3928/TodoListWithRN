@@ -1,9 +1,7 @@
 import axiosInstance from "./api"
 import { Todo } from "../shared/types"
 
-type TodoId = Pick<Todo, "id">
-
-export const getTodos = async () => {
+export const fetchTodos = async () => {
   try {
     const response = await axiosInstance.get("/todo")
     return response.data
@@ -15,20 +13,26 @@ export const getTodos = async () => {
 export const addTodo = async (content: string) => {
   try {
     const response = await axiosInstance.post("/todo/", { content })
-    return response
+    return response.data
   } catch (error) {
     console.error(error)
   }
 }
 
-export const updateTodo = ({ id, content }: Todo) => {
-  return axiosInstance.put(`/todo/${id}`, { content })
+export const updateTodo = async ({ id, content }: Todo) => {
+  try {
+    console.log(id, content)
+    const response = await axiosInstance.patch(`/todo/${id}`, { content })
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-export const deleteTodo = async (id: TodoId) => {
+export const deleteTodo = async (id: string) => {
   try {
-    const response = axiosInstance.delete(`/todo/${id}`)
-    return response
+    const response = await axiosInstance.delete(`/todo/${id}`)
+    return response.data
   } catch (error) {
     console.error(error)
   }

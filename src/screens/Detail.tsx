@@ -1,28 +1,43 @@
 import React, { useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { DetailScreenRouteProp } from "../shared/types"
+import { useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
+import * as modalSlice from "../store/slices/modal"
+import * as todoSlice from "../store/slices/todos"
 
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import TodoText from "../components/todo/TodoText"
+import TodoModal from "../components/modal/TodoModal"
+
 import theme from "../shared/theme"
+import { useHandleOpenModal } from "../services/hooks/useHandleOpenModal"
 
 type DetailProps = {
   route: DetailScreenRouteProp
 }
 
 export default function Detail({ route }: DetailProps) {
-  const { content } = route.params
-  const [isCompleted, setIsCompleted] = useState(false)
+  const dispatch = useDispatch()
+  const { content, id, isCompleted: initCompleteStatus } = route.params
+  const [isCompleted, setIsCompleted] = useState(initCompleteStatus)
+  const { modalType } = useSelector(modalSlice.modalSelector.all)
+  const handleOpenModal = useHandleOpenModal()
+
+  const handleCompleteStatus = () => {
+    const { updateCompleteStatus } = todoSlice.todoActions
+    setIsCompleted(!isCompleted)
+    dispatch(updateCompleteStatus(id))
+  }
 
   return (
     <View style={styles.container}>
+      <TodoModal modalType={modalType} />
       <View style={styles.centerContent}>
-        <TodoText content={content} isCompleted={isCompleted} isDetail={true} />
-      </View>
-      <View style={styles.bottom}>
         <BouncyCheckbox
+          isChecked={isCompleted}
           fillColor={theme.primary}
-          onPress={() => setIsCompleted(!isCompleted)}
+          onPress={handleCompleteStatus}
           iconStyle={{
             borderRadius: 0,
           }}
@@ -30,7 +45,17 @@ export default function Detail({ route }: DetailProps) {
             borderRadius: 0,
           }}
         />
+        <TodoText content={content} isCompleted={isCompleted} isDetail={true} />
       </View>
+      <TouchableOpacity
+        style={styles.bottom}
+        onPress={() => handleOpenModal("EDIT", { content, id })}
+        disabled={isCompleted}
+      >
+        <Text style={isCompleted ? styles.textDisabled : styles.text}>
+          수정하기
+        </Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -44,8 +69,10 @@ const styles = StyleSheet.create({
   },
   centerContent: {
     flex: 1,
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "flex-start",
     alignItems: "center",
+    paddingHorizontal: 30,
   },
   text: {
     fontSize: 20,
@@ -58,5 +85,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  textDisabled: {
+    fontSize: 20,
+    color: theme.primaryLight,
+    textDecorationLine: "line-through",
   },
 })

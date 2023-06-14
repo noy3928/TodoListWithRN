@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react"
-import { StyleSheet, View, FlatList } from "react-native"
-import { Todos, HomeScreenNavigationProp } from "../shared/types"
-import { getTodos } from "../services"
+import React, { useEffect, useState, useCallback } from "react"
+import { StyleSheet, View, FlatList, RefreshControl, Text } from "react-native"
+import { HomeScreenNavigationProp } from "../shared/types"
+
+import { useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
+import * as todoSlice from "../store/slices/todos"
+import * as modalSlice from "../store/slices/modal"
 
 import Todo from "../components/todo/Todo"
 import TodoModal from "../components/modal/TodoModal"
@@ -11,34 +15,56 @@ type HomeProps = {
   navigation: HomeScreenNavigationProp
 }
 
+const wait = (timeout: number) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout)
+  })
+}
+
 export default function Home({ navigation }: HomeProps) {
-  const [Todos, setTodos] = useState<Todos>([])
-  const [modalVisible, setModalVisible] = useState(false)
+  const dispatch = useDispatch()
+  const { todos, isLoading, error } = useSelector(todoSlice.todoSelector.all)
+  const { modalType } = useSelector(modalSlice.modalSelector.all)
+  const [refreshing, setRefreshing] = useState(false)
+
+  const fetchData = useCallback(() => {
+    const { fetchTodos } = todoSlice.todoActions
+    dispatch(fetchTodos())
+  }, [dispatch])
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      const todos = await getTodos()
-      setTodos(todos)
-    }
-    fetchTodos()
+    fetchData()
+  }, [])
+
+  const handleDisplayMore = () => {
+    const { increaseDisplayCount } = todoSlice.todoActions
+    dispatch(increaseDisplayCount())
+  }
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    const { resetDisplayCount } = todoSlice.todoActions
+    dispatch(resetDisplayCount())
+    fetchData()
+    wait(2000).then(() => setRefreshing(false))
   }, [])
 
   return (
     <View style={styles.container}>
-      <TodoModal
-        setModalVisible={setModalVisible}
-        modalVisible={modalVisible}
-      />
+      <TodoModal modalType={modalType} />
       <FlatList
-        data={Todos}
+        data={todos}
         renderItem={({ item }) => <Todo item={item} navigation={navigation} />}
         keyExtractor={item => item.id}
         style={styles.list}
+        onEndReached={handleDisplayMore}
+        onEndReachedThreshold={0.1}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ListFooterComponent={<View style={{ height: 100 }} />}
       />
-      <ControlBottomBar
-        TodoLength={Todos.length}
-        setModalVisible={setModalVisible}
-      />
+      <ControlBottomBar TodoLength={todos.length} />
     </View>
   )
 }

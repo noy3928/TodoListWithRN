@@ -2,6 +2,9 @@ import React, { useState } from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 import { Todo as TodoType, HomeScreenNavigationProp } from "../../shared/types"
 
+import { useDispatch } from "react-redux"
+import * as todoSlice from "../../store/slices/todos"
+
 import theme from "../../shared/theme"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import TodoText from "./TodoText"
@@ -13,16 +16,25 @@ interface Props {
 }
 
 export default function Todo({ item, navigation }: Props) {
-  const [isCompleted, setIsCompleted] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
+  const dispatch = useDispatch()
+
+  const handleDelete = () => {
+    const { deleteTodo } = todoSlice.todoActions
+    dispatch(deleteTodo(item.id))
+  }
+
+  const handleCompletedStatus = () => {
+    const { updateCompleteStatus } = todoSlice.todoActions
+    dispatch(updateCompleteStatus(item.id))
+  }
 
   return (
     <View style={styles.container}>
       <BouncyCheckbox
+        key={item.isCompleted?.toString()}
+        isChecked={item.isCompleted}
         fillColor={theme.primary}
-        onPress={() => {
-          setIsCompleted(!isCompleted)
-        }}
+        onPress={handleCompletedStatus}
         iconStyle={{
           borderRadius: 0,
         }}
@@ -30,28 +42,23 @@ export default function Todo({ item, navigation }: Props) {
           borderRadius: 0,
         }}
       />
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("Detail", { content: item.content, id: item.id })
-        }
-        style={styles.contentContainer}
-      >
-        <TodoText
-          content={item.content}
-          isCompleted={isCompleted}
-          isEditing={isEditing}
-        />
-        {!isCompleted && (
-          <TodoActions
-            isEditing={isEditing}
-            onEditSaveToggle={() => setIsEditing(!isEditing)}
-            onEditingCancel={() => setIsEditing(!isEditing)}
-            onDelete={() => {
-              /* 삭제 */
-            }}
-          />
+      <View style={styles.contentContainer}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Detail", {
+              content: item.content,
+              id: item.id,
+              isCompleted: item.isCompleted,
+            })
+          }
+          style={styles.textContainer}
+        >
+          <TodoText content={item.content} isCompleted={item.isCompleted} />
+        </TouchableOpacity>
+        {!item.isCompleted && (
+          <TodoActions item={item} onDelete={handleDelete} />
         )}
-      </TouchableOpacity>
+      </View>
     </View>
   )
 }
@@ -71,6 +78,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     alignItems: "center",
+  },
+  textContainer: {
+    flex: 1,
+    maxWidth: "80%",
   },
   editSaveButton: {
     flexShrink: 0,
