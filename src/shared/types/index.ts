@@ -25,3 +25,10 @@ export type ActionType = {
   type: string
   payload: string
 }
+
+export type UpdateActionType = {
+  type: string
+  payload: Todo
+}
+
+export type ModalType = "ADD" | "EDIT" | undefined

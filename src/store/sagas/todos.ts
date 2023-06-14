@@ -1,7 +1,7 @@
 import { call, put, takeEvery } from "redux-saga/effects"
 import * as API from "../../services"
 import { todoActions } from "../slices/todos"
-import { ActionType } from "../../shared/types"
+import { ActionType, UpdateActionType } from "../../shared/types"
 
 // TODO : Generator 타입 지정하기
 function* handleFetchTodos(): Generator<any, any, any> {
@@ -35,10 +35,24 @@ function* handleDeleteTodos(action: ActionType): Generator<any, any, any> {
   }
 }
 
+function* handleUpdateTodos(
+  action: UpdateActionType
+): Generator<any, any, any> {
+  const { updateTodoSuccess, updateTodoFailure } = todoActions
+  try {
+    console.log(action)
+    const todos = yield call(API.updateTodo, action.payload)
+    yield put(updateTodoSuccess(todos))
+  } catch (err) {
+    yield put(updateTodoFailure(err))
+  }
+}
+
 export default function* watchTodos() {
-  const { fetchTodos, addTodo, deleteTodo } = todoActions
+  const { fetchTodos, addTodo, deleteTodo, updateTodo } = todoActions
 
   yield takeEvery(fetchTodos, handleFetchTodos)
   yield takeEvery(addTodo, handleAddTodos)
   yield takeEvery(deleteTodo, handleDeleteTodos)
+  yield takeEvery(updateTodo, handleUpdateTodos)
 }

@@ -2,10 +2,16 @@ import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit"
 import { Todos } from "../../shared/types"
 import { RootState } from "../index"
 
-const initialState: { isLoading: boolean; todos: Todos; error: any } = {
+const initialState: {
+  isLoading: boolean
+  todos: Todos
+  error: any
+  editInfo: { content: string; id: string }
+} = {
   isLoading: false,
   todos: [],
   error: null,
+  editInfo: { content: "", id: "" },
 }
 
 export const slice = createSlice({
@@ -47,6 +53,27 @@ export const slice = createSlice({
     deleteTodo: (state, { payload: id }) => {
       state.isLoading = false
     },
+    getEditInfo: (state, { payload: { content, id } }) => {
+      state.editInfo.content = content
+      state.editInfo.id = id
+    },
+    updateTodoSuccess: (state, { payload: todo }) => {
+      state.isLoading = true
+      const newState = state.todos.map(item => {
+        if (item.id === todo.id) {
+          return todo
+        }
+        return item
+      })
+      state.todos = newState
+    },
+    updateTodoFailure: (state, { payload: error }) => {
+      state.isLoading = false
+      state.error = error
+    },
+    updateTodo: (state, { payload: todo }) => {
+      state.isLoading = false
+    },
   },
 })
 
@@ -54,8 +81,9 @@ const selectAllState = createSelector(
   (state: RootState) => state.todos.isLoading,
   (state: RootState) => state.todos.todos,
   (state: RootState) => state.todos.error,
-  (isLoading, todos, error) => {
-    return { isLoading, todos, error }
+  (state: RootState) => state.todos.editInfo,
+  (isLoading, todos, error, editInfo) => {
+    return { isLoading, todos, error, editInfo }
   }
 )
 

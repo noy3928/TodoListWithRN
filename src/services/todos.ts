@@ -19,8 +19,14 @@ export const addTodo = async (content: string) => {
   }
 }
 
-export const updateTodo = ({ id, content }: Todo) => {
-  return axiosInstance.put(`/todo/${id}`, { content })
+export const updateTodo = async ({ id, content }: Todo) => {
+  try {
+    console.log(id, content)
+    const response = await axiosInstance.patch(`/todo/${id}`, { content })
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export const deleteTodo = async (id: string) => {
