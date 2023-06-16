@@ -7,6 +7,7 @@ import * as todoSlice from "../../../store/slices/todos"
 import * as modalSlice from "../../../store/slices/modal"
 
 import TodoModalView from "./view/TodoModalView"
+import { ERROR_MESSAGE } from "../../../shared/constants"
 
 interface Props {
   modalType: ModalType
@@ -14,41 +15,44 @@ interface Props {
 
 export default function TodoModal({ modalType }: Props) {
   const dispatch = useDispatch()
-  const { editInfo } = useSelector(todoSlice.todoSelector.all)
+  const { editInfo, isLoading, error } = useSelector(todoSlice.todoSelector.all)
   const [content, setContent] = useState(
     modalType == "EDIT" ? editInfo.content : ""
   )
+  const { addTodo, updateTodo, setError, resetError } = todoSlice.todoActions
+  const { closeModal } = modalSlice.modalActions
 
   useEffect(() => {
     setContent(modalType == "EDIT" ? editInfo.content : "")
   }, [modalType, editInfo])
 
   const handleCloseModal = () => {
-    const { closeModal } = modalSlice.modalActions
+    if (error) dispatch(resetError())
     dispatch(closeModal())
   }
 
-  // TODO : 글작성시 로딩 처리 및 에러 처리하기
-  const handleAddTodo = async () => {
-    if (!content) return
-    const { addTodo } = todoSlice.todoActions
-    await dispatch(addTodo(content))
-    handleCloseModal()
+  const handleAddTodo = () => {
+    if (!content) return dispatch(setError(ERROR_MESSAGE.EMPTY_INPUT))
+
+    dispatch(addTodo(content))
   }
 
-  const handleUpdateTodo = async () => {
-    if (!content) return
-    const { updateTodo } = todoSlice.todoActions
-    await dispatch(
+  const handleUpdateTodo = () => {
+    if (!content) return dispatch(setError(ERROR_MESSAGE.EMPTY_INPUT))
+
+    if (error) dispatch(resetError())
+    dispatch(
       updateTodo({
         id: editInfo.id,
         content,
       })
     )
-    handleCloseModal()
   }
 
-  const onChangeContent = (value: string) => setContent(value)
+  const onChangeContent = (value: string) => {
+    if (error) dispatch(resetError())
+    setContent(value)
+  }
 
   const props = {
     handleCloseModal,
@@ -57,6 +61,8 @@ export default function TodoModal({ modalType }: Props) {
     content,
     onChangeContent,
     modalType,
+    isLoading,
+    error,
   }
 
   return <TodoModalView {...props} />

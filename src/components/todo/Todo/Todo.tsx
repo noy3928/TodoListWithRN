@@ -24,9 +24,9 @@ export default function Todo({ item, navigation }: Props) {
     dispatch(deleteTodo(item.id))
   }
 
-  const handleCompletedStatus = () => {
-    const { updateCompleteStatus } = todoSlice.todoActions
-    dispatch(updateCompleteStatus(item.id))
+  const handleCompletionStatus = () => {
+    const { updateCompletionStatus } = todoSlice.todoActions
+    dispatch(updateCompletionStatus(item.id))
   }
 
   const navigateDetail = () => {
@@ -43,7 +43,7 @@ export default function Todo({ item, navigation }: Props) {
 
   const props = {
     handleDelete,
-    handleCompletedStatus,
+    handleCompletionStatus,
     checkboxKey: item.isCompleted?.toString(),
     isChecked: item.isCompleted,
     item,

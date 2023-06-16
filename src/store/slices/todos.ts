@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit"
-import { Todos } from "../../shared/types"
+import { Todos, PayloadTodos } from "../../shared/types"
 import { RootState } from "../index"
 
 const initialState: {
@@ -20,11 +20,12 @@ export const slice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    fetchTodoSuccess: (state, action: PayloadAction<Todos>) => {
-      state.isLoading = true
-      const newState = action.payload.reverse().map(item => ({
+    fetchTodoSuccess: (state, action: PayloadAction<PayloadTodos>) => {
+      state.isLoading = false
+      const completionStatuses = action.payload.completionStatuses
+      const newState = action.payload.todos.reverse().map(item => ({
         ...item,
-        isCompleted: false,
+        isCompleted: completionStatuses[item.id],
       }))
       state.todos = newState
     },
@@ -33,10 +34,10 @@ export const slice = createSlice({
       state.error = error
     },
     fetchTodos: state => {
-      state.isLoading = false
+      state.isLoading = true
     },
     addTodoSuccess: (state, { payload: todo }) => {
-      state.isLoading = true
+      state.isLoading = false
       state.todos.unshift(todo)
     },
     addTodoFailure: (state, { payload: error }) => {
@@ -44,10 +45,10 @@ export const slice = createSlice({
       state.error = error
     },
     addTodo: (state, { payload: todo }) => {
-      state.isLoading = false
+      state.isLoading = true
     },
     deleteTodoSuccess: (state, { payload: id }) => {
-      state.isLoading = true
+      state.isLoading = false
       const newState = state.todos.filter(todo => todo.id !== id)
       state.todos = newState
     },
@@ -56,14 +57,14 @@ export const slice = createSlice({
       state.error = error
     },
     deleteTodo: (state, { payload: id }) => {
-      state.isLoading = false
+      state.isLoading = true
     },
     getEditInfo: (state, { payload: { content, id } }) => {
       state.editInfo.content = content
       state.editInfo.id = id
     },
     updateTodoSuccess: (state, { payload: todo }) => {
-      state.isLoading = true
+      state.isLoading = false
       const newState = state.todos.map(item => {
         if (item.id === todo.id) {
           return todo
@@ -77,10 +78,9 @@ export const slice = createSlice({
       state.error = error
     },
     updateTodo: (state, { payload: todo }) => {
-      state.isLoading = false
-    },
-    updateCompleteStatus: (state, { payload: id }) => {
       state.isLoading = true
+    },
+    updateCompletionStatusSuccess: (state, { payload: id }) => {
       const newState = state.todos.map(item => {
         if (item.id === id) {
           return { ...item, isCompleted: !item.isCompleted }
@@ -89,11 +89,21 @@ export const slice = createSlice({
       })
       state.todos = newState
     },
+    updateCompletionStatusFailure: (state, { payload: error }) => {
+      state.error = error
+    },
+    updateCompletionStatus: (state, { payload: id }) => {},
     increaseDisplayCount: state => {
       state.displayCount += 10
     },
     resetDisplayCount: state => {
       state.displayCount = initialState.displayCount
+    },
+    setError: (state, { payload: error }) => {
+      state.error = error
+    },
+    resetError: state => {
+      state.error = initialState.error
     },
   },
 })
