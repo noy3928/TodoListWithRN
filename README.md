@@ -325,6 +325,48 @@ addTodoSuccess: (state, { payload: todo }) => {
 </Pressable>
 ```
 
+### Detail 페이지에서 삭제 기능 구현
+
+- Detail 페이지에서 삭제가 가능하도록 만들었습니다.
+- 삭제 요청 후 곧바로 홈페이지로 이동하도록 만들지 않고, 사가에서 삭제가 완료된 것을 확인한 후 홈페이지로 이동하도록 구현했습니다.
+  - navigaTo 라는 유틸을 따로 만든 후 해당 유틸을 사가 안에서 사용하도록 만들었습니다.
+
+```js
+import {
+  CommonActions,
+  createNavigationContainerRef,
+} from "@react-navigation/native"
+
+export const navigationRef = createNavigationContainerRef()
+
+export function navigateTo(routeName: string, params?: object) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch(CommonActions.navigate(routeName, params))
+  }
+}
+
+// App.tsx
+...
+  <NavigationContainer ref={navigationRef}>
+    ...
+  </NavigationContainer>
+...
+
+// sagas/todos.ts
+export function* handleDeleteTodos(action: DeleteActionType): Generator<any, any, any> {
+  const { deleteTodoSuccess, deleteTodoFailure } = todoActions
+  try {
+    const { id, page } = action.payload
+    yield call(API.deleteTodo, id)
+    yield put(deleteTodoSuccess(id)) // 삭제가 성공하면
+    if (page == "Detail") navigateTo("Home") // Detail 페이지에서의 작업인지 확인 후 홈으로 이동
+  } catch (err) {
+    yield put(deleteTodoFailure(err))
+  }
+}
+
+```
+
 ### VAC 패턴 적용 및 코드 관심사 분리
 
 - VAC 패턴을 적용하여 렌더링과 로직을 분리했습니다.
