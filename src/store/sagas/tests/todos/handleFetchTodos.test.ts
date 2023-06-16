@@ -5,6 +5,7 @@ import { handleFetchTodos } from "../../todos"
 import * as API from "../../../../services"
 import { todoActions } from "../../../slices/todos"
 import { PayloadTodos } from "../../../../shared/types"
+import { ERROR_MESSAGE } from "../../../../shared/constants"
 
 jest.mock("@react-navigation/native", () => {
   return {
@@ -59,13 +60,13 @@ describe("handleFetchTodos", () => {
   })
 
   it("handleFetchTodos시 발생한 에러를 처리한다.", () => {
-    const error = new Error("에러발생")
+    const error = new Error(ERROR_MESSAGE.REQUEST_FAILED)
 
     testSaga(handleFetchTodos)
       .next()
       .call(API.fetchTodos)
       .throw(error)
-      .put(todoActions.fetchTodoFailure(error))
+      .put(todoActions.fetchTodoFailure(error.message))
       .next()
       .isDone()
   })
