@@ -15,10 +15,13 @@ type DetailProps = {
 
 export default function Detail({ route }: DetailProps) {
   const dispatch = useDispatch()
-  const { content, id, isCompleted: initCompleteStatus } = route.params
+  const { id, isCompleted: initCompleteStatus } = route.params
   const [isCompleted, setIsCompleted] = useState(initCompleteStatus)
   const { modalType } = useSelector(modalSlice.modalSelector.all)
+  const { todos } = useSelector(todoSlice.todoSelector.all)
   const handleOpenModal = useHandleOpenModal()
+
+  const content = todos.find(todo => todo.id === id)?.content ?? ""
 
   const handleCompleteStatus = () => {
     const { updateCompleteStatus } = todoSlice.todoActions
