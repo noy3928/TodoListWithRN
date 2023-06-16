@@ -27,14 +27,13 @@ export type HomeScreenNavigationProp = NavigationProp<
 
 export type DetailScreenRouteProp = RouteProp<RootStackParamList, "Detail">
 
-export type ActionType = {
+export type ActionType<T = string> = {
   type: string
-  payload: string
+  payload: T
 }
 
-export type UpdateActionType = {
-  type: string
-  payload: Todo
-}
+export type DeleteActionType = ActionType<{ id: string; page: string }>
+
+export type UpdateActionType = ActionType<Todo>
 
 export type ModalType = "ADD" | "EDIT" | undefined

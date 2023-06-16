@@ -9,21 +9,21 @@ import TodoModal from "../../../components/modal/TodoModal"
 import ControlBottomBar from "../../../components/ui/ControlBottomBar"
 
 type HomeProps = {
-  navigation: HomeScreenNavigationProp
-  handleDisplayMore: () => void
-  onRefresh: () => void
-  refreshing: boolean
   todos: Todos
   modalType: ModalType
+  refreshing: boolean
+  navigation: HomeScreenNavigationProp
+  onRefresh: () => void
+  handleDisplayMore: () => void
 }
 
 export default function HomeView({
-  navigation,
-  handleDisplayMore,
-  onRefresh,
-  refreshing,
   todos,
   modalType,
+  refreshing,
+  navigation,
+  onRefresh,
+  handleDisplayMore,
 }: HomeProps) {
   return (
     <View style={styles.container}>

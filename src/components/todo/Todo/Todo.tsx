@@ -21,7 +21,7 @@ export default function Todo({ item, navigation }: Props) {
 
   const handleDelete = () => {
     const { deleteTodo } = todoSlice.todoActions
-    dispatch(deleteTodo(item.id))
+    dispatch(deleteTodo({ id: item.id }))
   }
 
   const handleCompletionStatus = () => {

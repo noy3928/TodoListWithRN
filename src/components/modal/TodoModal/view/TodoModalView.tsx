@@ -13,25 +13,25 @@ import { ModalType } from "../../../../shared/types"
 import ActionButtonView from "./ActionButtonView"
 
 interface Props {
-  modalType: ModalType
-  handleCloseModal: () => void
-  handleAddTodo: () => void
-  handleUpdateTodo: () => void
   content: string
-  onChangeContent: (value: string) => void
-  isLoading: boolean
+  modalType: ModalType
   error: string | null
+  isLoading: boolean
+  onChangeContent: (value: string) => void
+  handleUpdateTodo: () => void
+  handleAddTodo: () => void
+  handleCloseModal: () => void
 }
 
 export default function TodoModalView({
-  modalType,
   content,
-  onChangeContent,
-  handleCloseModal,
-  handleAddTodo,
-  handleUpdateTodo,
-  isLoading,
+  modalType,
   error,
+  isLoading,
+  onChangeContent,
+  handleUpdateTodo,
+  handleAddTodo,
+  handleCloseModal,
 }: Props) {
   return (
     <Modal

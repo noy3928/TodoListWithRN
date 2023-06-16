@@ -325,6 +325,48 @@ addTodoSuccess: (state, { payload: todo }) => {
 </Pressable>
 ```
 
+### Detail 페이지에서 삭제 기능 구현
+
+- Detail 페이지에서 삭제가 가능하도록 만들었습니다.
+- 삭제 요청 후 곧바로 홈페이지로 이동하도록 만들지 않고, 비동기적으로 사가에서 삭제가 완료된 것을 확인한 후 홈페이지로 이동하도록 구현했습니다.
+  - navigaTo 라는 유틸을 따로 만든 후 해당 유틸을 사가 안에서 사용하도록 만들었습니다.
+
+```js
+import {
+  CommonActions,
+  createNavigationContainerRef,
+} from "@react-navigation/native"
+
+export const navigationRef = createNavigationContainerRef()
+
+export function navigateTo(routeName: string, params?: object) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch(CommonActions.navigate(routeName, params))
+  }
+}
+
+// App.tsx
+...
+  <NavigationContainer ref={navigationRef}>
+    ...
+  </NavigationContainer>
+...
+
+// sagas/todos.ts
+export function* handleDeleteTodos(action: DeleteActionType): Generator<any, any, any> {
+  const { deleteTodoSuccess, deleteTodoFailure } = todoActions
+  try {
+    const { id, page } = action.payload
+    yield call(API.deleteTodo, id)
+    yield put(deleteTodoSuccess(id)) // 삭제가 성공하면
+    if (page == "Detail") navigateTo("Home") // Detail 페이지에서의 작업인지 확인 후 홈으로 이동
+  } catch (err) {
+    yield put(deleteTodoFailure(err))
+  }
+}
+
+```
+
 ### VAC 패턴 적용 및 코드 관심사 분리
 
 - VAC 패턴을 적용하여 렌더링과 로직을 분리했습니다.
@@ -333,7 +375,7 @@ addTodoSuccess: (state, { payload: todo }) => {
   - 장점 :
     - 코드 관심사 분리로 인해 코드 가독성이 좋아지는 것 같았습니다.
     - 큰 회사의 경우 퍼블리셔와 프론트개발자가 나누어져있기 때문에 그 나름대로 유익이 있을 것이라 생각했습니다. 설사 작은 스타트업이라 할지라도 디자인 시스템이 적용된 프로젝트의 경우 자동으로 VAC 패턴을 사용할 수 밖에 없겠다는 생각이 들었습니다.
-    - 컴포넌트에 대한 테스트코드를 작성할 때, 더욱 테스트하기 쉬운 컴포넌트가 될 가능성이 높아진다고 생각이 되었습니다. 왜냐하면 VAC 컴포넌트의 경우엔 모든 외부에 대한 의존성이 극히 적고, 모든 의존성을 명시적으로 props를 통해 받아오기 때문에 테스트하기 쉬울 것 같았습니다. 테스트하기 쉬운 코드가 작성된다는 것은 또한 코드의 품질이 올라간다는 것이고 이는 유지보수성 또한 올라가게 된다는 것을 의미한다고 생각했습니다.
+    - 컴포넌트에 대한 테스트코드를 작성할 때, 더욱 테스트하기 쉬운 컴포넌트가 될 가능성이 높아진다고 생각이 되었습니다. 왜냐하면 VAC 컴포넌트의 경우엔 외부에 대한 의존성이 극히 적고, 모든 의존성을 명시적으로 props를 통해 받아오기 때문에 테스트하기 쉬울 것 같았습니다. 테스트하기 쉬운 코드가 작성된다는 것은 또한 코드의 품질이 올라간다는 것이고 이는 유지보수성 또한 올라가게 된다는 것을 의미한다고 생각했습니다.
     - 폴더상으로 렌더링과 관련된 컴포넌트와 로직과 관련된 컴포넌트가 분리되어있어, 폴더상의 가독성이 좋아질 수 있다고 생각되었습니다.
   - 단점 :
     - 컴포넌트의 구조가 복잡해질 수록 props drilling이 생길 위험이 높아질 것 같았습니다. 이것은 또한 그 나름대로 유지보수성을 해치는 요인이 될 것이라고 생각되었습니다.
