@@ -21,7 +21,7 @@ export const slice = createSlice({
   initialState,
   reducers: {
     fetchTodoSuccess: (state, action: PayloadAction<Todos>) => {
-      state.isLoading = true
+      state.isLoading = false
       const newState = action.payload.reverse().map(item => ({
         ...item,
         isCompleted: false,
@@ -33,10 +33,10 @@ export const slice = createSlice({
       state.error = error
     },
     fetchTodos: state => {
-      state.isLoading = false
+      state.isLoading = true
     },
     addTodoSuccess: (state, { payload: todo }) => {
-      state.isLoading = true
+      state.isLoading = false
       state.todos.unshift(todo)
     },
     addTodoFailure: (state, { payload: error }) => {
@@ -44,10 +44,10 @@ export const slice = createSlice({
       state.error = error
     },
     addTodo: (state, { payload: todo }) => {
-      state.isLoading = false
+      state.isLoading = true
     },
     deleteTodoSuccess: (state, { payload: id }) => {
-      state.isLoading = true
+      state.isLoading = false
       const newState = state.todos.filter(todo => todo.id !== id)
       state.todos = newState
     },
@@ -56,14 +56,14 @@ export const slice = createSlice({
       state.error = error
     },
     deleteTodo: (state, { payload: id }) => {
-      state.isLoading = false
+      state.isLoading = true
     },
     getEditInfo: (state, { payload: { content, id } }) => {
       state.editInfo.content = content
       state.editInfo.id = id
     },
     updateTodoSuccess: (state, { payload: todo }) => {
-      state.isLoading = true
+      state.isLoading = false
       const newState = state.todos.map(item => {
         if (item.id === todo.id) {
           return todo
@@ -77,7 +77,7 @@ export const slice = createSlice({
       state.error = error
     },
     updateTodo: (state, { payload: todo }) => {
-      state.isLoading = false
+      state.isLoading = true
     },
     updateCompleteStatus: (state, { payload: id }) => {
       state.isLoading = true

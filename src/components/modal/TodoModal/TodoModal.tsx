@@ -14,7 +14,7 @@ interface Props {
 
 export default function TodoModal({ modalType }: Props) {
   const dispatch = useDispatch()
-  const { editInfo } = useSelector(todoSlice.todoSelector.all)
+  const { editInfo, isLoading, error } = useSelector(todoSlice.todoSelector.all)
   const [content, setContent] = useState(
     modalType == "EDIT" ? editInfo.content : ""
   )
@@ -55,6 +55,7 @@ export default function TodoModal({ modalType }: Props) {
     content,
     onChangeContent,
     modalType,
+    isLoading,
   }
 
   return <TodoModalView {...props} />

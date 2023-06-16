@@ -20,6 +20,7 @@ interface Props {
   handleUpdateTodo: () => void
   content: string
   onChangeContent: (value: string) => void
+  isLoading: boolean
 }
 
 export default function TodoModalView({
@@ -29,6 +30,7 @@ export default function TodoModalView({
   handleCloseModal,
   handleAddTodo,
   handleUpdateTodo,
+  isLoading,
 }: Props) {
   return (
     <Modal
@@ -54,6 +56,7 @@ export default function TodoModalView({
               modalType={modalType}
               handleAddTodo={handleAddTodo}
               handleEditTodo={handleUpdateTodo}
+              isLoading={isLoading}
             />
           </View>
         </View>

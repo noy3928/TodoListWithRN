@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, Text, Pressable } from "react-native"
+import { StyleSheet, Text, Pressable, ActivityIndicator } from "react-native"
 import theme from "../../../../shared/theme"
 
 import { ModalType } from "../../../../shared/types"
@@ -8,17 +8,23 @@ interface Props {
   modalType: ModalType
   handleAddTodo: () => void
   handleEditTodo: () => void
+  isLoading: boolean
 }
 
 export default function ActionButtonView({
   modalType,
   handleAddTodo,
   handleEditTodo,
+  isLoading,
 }: Props) {
   if (modalType === "ADD") {
     return (
       <Pressable style={styles.button} onPress={handleAddTodo}>
-        <Text style={styles.textStyle}>추가하기</Text>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <Text style={styles.textStyle}>추가하기</Text>
+        )}
       </Pressable>
     )
   }
@@ -26,7 +32,11 @@ export default function ActionButtonView({
   if (modalType === "EDIT") {
     return (
       <Pressable style={styles.button} onPress={handleEditTodo}>
-        <Text style={styles.textStyle}>수정하기</Text>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <Text style={styles.textStyle}>수정하기</Text>
+        )}
       </Pressable>
     )
   }
