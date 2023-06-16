@@ -21,7 +21,6 @@ export const addTodo = async (content: string) => {
 
 export const updateTodo = async ({ id, content }: Todo) => {
   try {
-    console.log(id, content)
     const response = await axiosInstance.patch(`/todo/${id}/`, { content })
     return response.data
   } catch (error) {

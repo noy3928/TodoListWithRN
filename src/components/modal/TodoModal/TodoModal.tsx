@@ -29,23 +29,21 @@ export default function TodoModal({ modalType }: Props) {
   }
 
   // TODO : 글작성시 로딩 처리 및 에러 처리하기
-  const handleAddTodo = async () => {
+  const handleAddTodo = () => {
     if (!content) return
     const { addTodo } = todoSlice.todoActions
-    await dispatch(addTodo(content))
-    handleCloseModal()
+    dispatch(addTodo(content))
   }
 
-  const handleUpdateTodo = async () => {
+  const handleUpdateTodo = () => {
     if (!content) return
     const { updateTodo } = todoSlice.todoActions
-    await dispatch(
+    dispatch(
       updateTodo({
         id: editInfo.id,
         content,
       })
     )
-    handleCloseModal()
   }
 
   const onChangeContent = (value: string) => setContent(value)

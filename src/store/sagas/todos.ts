@@ -1,6 +1,7 @@
 import { call, put, takeEvery } from "redux-saga/effects"
 import * as API from "../../services"
 import { todoActions } from "../slices/todos"
+import { modalActions } from "../slices/modal"
 import { ActionType, UpdateActionType } from "../../shared/types"
 
 // TODO : Generator 타입 지정하기
@@ -17,9 +18,12 @@ function* handleFetchTodos(): Generator<any, any, any> {
 
 function* handleAddTodos(action: ActionType): Generator<any, any, any> {
   const { addTodoSuccess, addTodoFailure } = todoActions
+  const { closeModal } = modalActions
+
   try {
     const todos = yield call(API.addTodo, action.payload)
     yield put(addTodoSuccess(todos))
+    yield put(closeModal())
   } catch (err) {
     yield put(addTodoFailure(err))
   }
@@ -40,10 +44,11 @@ function* handleUpdateTodos(
   action: UpdateActionType
 ): Generator<any, any, any> {
   const { updateTodoSuccess, updateTodoFailure } = todoActions
+  const { closeModal } = modalActions
   try {
-    console.log(action)
     const todos = yield call(API.updateTodo, action.payload)
     yield put(updateTodoSuccess(todos))
+    yield put(closeModal())
   } catch (err) {
     yield put(updateTodoFailure(err))
   }
