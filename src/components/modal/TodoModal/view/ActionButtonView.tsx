@@ -19,7 +19,11 @@ export default function ActionButtonView({
 }: Props) {
   if (modalType === "ADD") {
     return (
-      <Pressable style={styles.button} onPress={handleAddTodo}>
+      <Pressable
+        style={styles.button}
+        onPress={handleAddTodo}
+        disabled={isLoading}
+      >
         {isLoading ? (
           <ActivityIndicator />
         ) : (
@@ -31,7 +35,11 @@ export default function ActionButtonView({
 
   if (modalType === "EDIT") {
     return (
-      <Pressable style={styles.button} onPress={handleEditTodo}>
+      <Pressable
+        style={styles.button}
+        onPress={handleEditTodo}
+        disabled={isLoading}
+      >
         {isLoading ? (
           <ActivityIndicator />
         ) : (

@@ -100,6 +100,7 @@ $ yarn ios or yarn android
  ┃ ┃ ┗ 📜useHandleOpenModal.ts      // 모달을 열고 닫는 로직을 처리하는 커스텀 훅
  ┃ ┣ 📂apis                         // API 요청 관련 로직을 모아놓은 폴더
  ┃ ┃ ┣ 📜baseApi.ts
+ ┃ ┃ ┣ 📜errorHandler.ts            // 에러 핸들링 로직을 모아놓은 파일
  ┃ ┃ ┣ 📜index.ts
  ┃ ┃ ┗ 📜todos.ts
  ┃ ┗ 📜index.ts
@@ -253,6 +254,73 @@ const handleDisplayMore = () => {
 />
 ```
 
-### 에러처리
+### 에러 및 로딩 처리
 
-- 에러가 발생했을 경우, 에러 메시지를 화면에 보여주도록 구현했습니다.
+- 에러가 발생했을 경우, axios의 interceptor를 활용하여 에러를 핸들링했습니다.
+- 에러가 발생했을 경우, 스토어에 error라는 상태값을 저장하여, 에러메시지를 화면에 보여주도록 구현했습니다.
+- 로딩 처리는 스토어에 isLoading이라는 상태값을 저장하여, 로딩중일 경우 ActivityIndicator를 보여주도록 구현했습니다.
+
+에러처리 코드 소개 :
+
+```js
+// 에러 핸들링 코드 일부
+axiosInstance.interceptors.response.use((_: AxiosResponse) => {
+  return _
+}, onResponseRejected)
+
+function onResponseRejected(error: any) {
+  const errorMessage = getErrorMessage(error)
+
+  if (errorMessage === ERROR_MESSAGE.TIMEOUT_ERROR) {
+    console.error("Timeout error: ", error.message)
+  } else if (errorMessage === ERROR_MESSAGE.NETWORK_ERROR) {
+    console.error("Network error: ", error.message)
+  }
+
+  throw new Error(errorMessage)
+}
+
+export default axiosInstance
+
+export function getErrorMessage(error: any): string {
+  if (error.code === "ECONNABORTED") {
+    return ERROR_MESSAGE.TIMEOUT_ERROR
+  }
+  if (error.message === "Network Error") {
+    return ERROR_MESSAGE.NETWORK_ERROR
+  }
+
+  return ERROR_MESSAGE.REQUEST_FAILED
+}
+
+// 에러 발생시 스토어에 저장 코드 일부
+fetchTodoFailure: (state, { payload: error }) => {
+  state.isLoading = false
+  state.error = error
+},
+
+// 에러 발생시 화면에 보여줄 컴포넌트
+{error && <Text style={styles.errorText}>{error}</Text>}
+```
+
+로딩처리 코드 소개 :
+
+```js
+// 로딩중일 경우 스토어에 저장 코드
+addTodo: (state, { payload: todo }) => {
+  state.isLoading = true
+},
+addTodoSuccess: (state, { payload: todo }) => {
+  state.isLoading = false
+  state.todos.unshift(todo)
+},
+
+// 로딩중일 경우 화면에 보여줄 컴포넌트
+<Pressable style={styles.button} onPress={handleAddTodo} disabled={isLoading}>
+  {isLoading ? (
+    <ActivityIndicator />
+  ) : (
+    <Text style={styles.textStyle}>추가하기</Text>
+  )}
+</Pressable>
+```
