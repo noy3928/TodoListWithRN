@@ -7,6 +7,7 @@ import * as todoSlice from "../../../store/slices/todos"
 import * as modalSlice from "../../../store/slices/modal"
 
 import TodoModalView from "./view/TodoModalView"
+import { ERROR_MESSAGE } from "../../../shared/constants"
 
 interface Props {
   modalType: ModalType
@@ -18,7 +19,7 @@ export default function TodoModal({ modalType }: Props) {
   const [content, setContent] = useState(
     modalType == "EDIT" ? editInfo.content : ""
   )
-  const { addTodo, updateTodo, resetError } = todoSlice.todoActions
+  const { addTodo, updateTodo, setError, resetError } = todoSlice.todoActions
   const { closeModal } = modalSlice.modalActions
 
   useEffect(() => {
@@ -30,15 +31,15 @@ export default function TodoModal({ modalType }: Props) {
     dispatch(closeModal())
   }
 
-  // TODO : 글작성시 로딩 처리 및 에러 처리하기
   const handleAddTodo = () => {
-    if (!content) return
+    if (!content) return dispatch(setError(ERROR_MESSAGE.EMPTY_INPUT))
 
     dispatch(addTodo(content))
   }
 
   const handleUpdateTodo = () => {
-    if (!content) return
+    if (!content) return dispatch(setError(ERROR_MESSAGE.EMPTY_INPUT))
+
     if (error) dispatch(resetError())
     dispatch(
       updateTodo({
