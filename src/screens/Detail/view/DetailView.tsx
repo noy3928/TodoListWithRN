@@ -10,19 +10,21 @@ import TodoModal from "../../../components/modal/TodoModal"
 import theme from "../../../shared/theme"
 
 type DetailProps = {
-  handleCompleteStatus: () => void
-  isCompleted: boolean | undefined
   content: string
   modalType: ModalType
+  isCompleted: boolean | undefined
+  handleCompleteStatus: () => void
   handleOpenEditModal: () => void
+  handleDelete: () => void
 }
 
 export default function DetailView({
-  handleCompleteStatus,
-  isCompleted,
   content,
   modalType,
+  isCompleted,
+  handleCompleteStatus,
   handleOpenEditModal,
+  handleDelete,
 }: DetailProps) {
   return (
     <View style={styles.container}>
@@ -41,18 +43,24 @@ export default function DetailView({
         />
         <TodoText content={content} isCompleted={isCompleted} isDetail={true} />
       </View>
-      <TouchableOpacity
-        style={styles.bottom}
-        onPress={handleOpenEditModal}
-        disabled={isCompleted}
-      >
-        <MaterialCommunityIcons
-          name="pencil-outline"
-          size={30}
-          color={theme.primary}
-          style={isCompleted ? styles.textDisabled : styles.text}
-        />
-      </TouchableOpacity>
+      <View style={styles.bottom}>
+        <TouchableOpacity onPress={handleOpenEditModal} disabled={isCompleted}>
+          <MaterialCommunityIcons
+            name="pencil-outline"
+            size={30}
+            color={theme.primary}
+            style={isCompleted ? styles.textDisabled : styles.text}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleDelete} disabled={isCompleted}>
+          <MaterialCommunityIcons
+            name="delete-outline"
+            size={30}
+            color={theme.primary}
+            style={isCompleted ? styles.textDisabled : styles.text}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   )
 }
@@ -82,6 +90,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
+    gap: 30,
   },
   textDisabled: {
     fontSize: 30,

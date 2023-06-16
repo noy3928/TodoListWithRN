@@ -5,17 +5,17 @@ import theme from "../../../../shared/theme"
 import { ModalType } from "../../../../shared/types"
 
 interface Props {
+  isLoading: boolean
   modalType: ModalType
   handleAddTodo: () => void
   handleEditTodo: () => void
-  isLoading: boolean
 }
 
 export default function ActionButtonView({
+  isLoading,
   modalType,
   handleAddTodo,
   handleEditTodo,
-  isLoading,
 }: Props) {
   if (modalType === "ADD") {
     return (

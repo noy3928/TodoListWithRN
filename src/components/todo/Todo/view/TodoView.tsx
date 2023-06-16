@@ -9,20 +9,20 @@ import TodoActionsView from "./TodoActionsView"
 
 interface Props {
   item: TodoType
-  handleDelete: () => void
-  handleCompletionStatus: () => void
   checkboxKey: string | undefined
   isChecked: boolean | undefined
+  handleCompletionStatus: () => void
+  handleDelete: () => void
   navigateDetail: () => void
   handleOpenEditModal: () => void
 }
 
 export default function Todo({
   item,
-  handleDelete,
-  handleCompletionStatus,
   checkboxKey,
   isChecked,
+  handleCompletionStatus,
+  handleDelete,
   navigateDetail,
   handleOpenEditModal,
 }: Props) {
