@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { todoActions } from "../slices/todos"
 import { modalActions } from "../slices/modal"
 import { ActionType, UpdateActionType } from "../../shared/types"
-import { ERROR_MESSAGE } from "../../shared/constants"
 
 // TODO : Generator 타입 지정하기
 export function* handleFetchTodos(): Generator<any, any, any> {
@@ -16,6 +15,7 @@ export function* handleFetchTodos(): Generator<any, any, any> {
       AsyncStorage.getItem,
       "completionStatuses"
     )
+
     if (storedStatuses == null && storedStatuses == undefined) {
       const completionStatuses: { [key: string]: boolean } = {}
       for (const todo of todos) {
@@ -36,7 +36,7 @@ export function* handleFetchTodos(): Generator<any, any, any> {
       )
     }
   } catch (err) {
-    yield put(fetchTodoFailure(ERROR_MESSAGE.FETCH_FAILED))
+    yield put(fetchTodoFailure(err))
   }
 }
 
@@ -49,7 +49,7 @@ export function* handleAddTodos(action: ActionType): Generator<any, any, any> {
     yield put(addTodoSuccess(todos))
     yield put(closeModal())
   } catch (err) {
-    yield put(addTodoFailure(ERROR_MESSAGE.ADD_FAILED))
+    yield put(addTodoFailure(err))
   }
 }
 
@@ -63,7 +63,7 @@ export function* handleUpdateTodos(
     yield put(updateTodoSuccess(todos))
     yield put(closeModal())
   } catch (err) {
-    yield put(updateTodoFailure(ERROR_MESSAGE.EDIT_FAILED))
+    yield put(updateTodoFailure(err))
   }
 }
 
@@ -101,7 +101,7 @@ export function* handleUpdateCompletionStatus(
 
     yield put(updateCompletionStatusSuccess(id))
   } catch (err) {
-    yield put(updateCompletionStatusFailure(ERROR_MESSAGE.COMPLETE_FAILED))
+    yield put(updateCompletionStatusFailure(err))
   }
 }
 
