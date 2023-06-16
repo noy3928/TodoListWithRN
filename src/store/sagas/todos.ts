@@ -1,5 +1,7 @@
 import { call, put, takeEvery } from "redux-saga/effects"
 import * as API from "../../services"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+
 import { todoActions } from "../slices/todos"
 import { modalActions } from "../slices/modal"
 import { ActionType, UpdateActionType } from "../../shared/types"
@@ -10,8 +12,29 @@ export function* handleFetchTodos(): Generator<any, any, any> {
   const { fetchTodoSuccess, fetchTodoFailure } = todoActions
   try {
     const todos = yield call(API.fetchTodos)
-
-    yield put(fetchTodoSuccess(todos))
+    const storedStatuses = yield call(
+      AsyncStorage.getItem,
+      "completionStatuses"
+    )
+    if (storedStatuses == null && storedStatuses == undefined) {
+      const completionStatuses: { [key: string]: boolean } = {}
+      for (const todo of todos) {
+        completionStatuses[todo.id] = false
+      }
+      yield call(
+        AsyncStorage.setItem,
+        "completionStatuses",
+        JSON.stringify(completionStatuses)
+      )
+      yield put(fetchTodoSuccess({ todos, completionStatuses }))
+    } else {
+      yield put(
+        fetchTodoSuccess({
+          todos,
+          completionStatuses: JSON.parse(storedStatuses),
+        })
+      )
+    }
   } catch (err) {
     yield put(fetchTodoFailure(ERROR_MESSAGE.FETCH_FAILED))
   }
@@ -20,8 +43,6 @@ export function* handleFetchTodos(): Generator<any, any, any> {
 export function* handleAddTodos(action: ActionType): Generator<any, any, any> {
   const { addTodoSuccess, addTodoFailure } = todoActions
   const { closeModal } = modalActions
-
-  console.log(action)
 
   try {
     const todos = yield call(API.addTodo, action.payload)
@@ -59,11 +80,43 @@ export function* handleDeleteTodos(
   }
 }
 
+export function* handleUpdateCompletionStatus(
+  action: ActionType
+): Generator<any, any, any> {
+  const { updateCompletionStatusSuccess, updateCompletionStatusFailure } =
+    todoActions
+  const id = action.payload
+  try {
+    const storedStatuses = yield call(
+      AsyncStorage.getItem,
+      "completionStatuses"
+    )
+    const completionStatuses = JSON.parse(storedStatuses) || {}
+    completionStatuses[id] = !completionStatuses[id]
+    yield call(
+      AsyncStorage.setItem,
+      "completionStatuses",
+      JSON.stringify(completionStatuses)
+    )
+
+    yield put(updateCompletionStatusSuccess(id))
+  } catch (err) {
+    yield put(updateCompletionStatusFailure(ERROR_MESSAGE.COMPLETE_FAILED))
+  }
+}
+
 export default function* watchTodos() {
-  const { fetchTodos, addTodo, deleteTodo, updateTodo } = todoActions
+  const {
+    fetchTodos,
+    addTodo,
+    deleteTodo,
+    updateTodo,
+    updateCompletionStatus,
+  } = todoActions
 
   yield takeEvery(fetchTodos, handleFetchTodos)
   yield takeEvery(addTodo, handleAddTodos)
   yield takeEvery(updateTodo, handleUpdateTodos)
   yield takeEvery(deleteTodo, handleDeleteTodos)
+  yield takeEvery(updateCompletionStatus, handleUpdateCompletionStatus)
 }

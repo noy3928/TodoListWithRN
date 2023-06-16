@@ -24,9 +24,9 @@ export default function Detail({ route }: DetailProps) {
   const content = todos.find(todo => todo.id === id)?.content ?? ""
 
   const handleCompleteStatus = () => {
-    const { updateCompleteStatus } = todoSlice.todoActions
+    const { updateCompletionStatus } = todoSlice.todoActions
     setIsCompleted(!isCompleted)
-    dispatch(updateCompleteStatus(id))
+    dispatch(updateCompletionStatus(id))
   }
 
   const handleOpenEditModal = () => {

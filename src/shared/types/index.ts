@@ -10,6 +10,11 @@ export type Todo = {
   created_at?: string
 }
 
+export type PayloadTodos = {
+  todos: Todos
+  completionStatuses: { [key: string]: boolean }
+}
+
 export type RootStackParamList = {
   Home: undefined
   Detail: { id: string; content: string; isCompleted?: boolean }

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit"
-import { Todos } from "../../shared/types"
+import { Todos, PayloadTodos } from "../../shared/types"
 import { RootState } from "../index"
 
 const initialState: {
@@ -20,11 +20,12 @@ export const slice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    fetchTodoSuccess: (state, action: PayloadAction<Todos>) => {
+    fetchTodoSuccess: (state, action: PayloadAction<PayloadTodos>) => {
       state.isLoading = false
-      const newState = action.payload.reverse().map(item => ({
+      const completionStatuses = action.payload.completionStatuses
+      const newState = action.payload.todos.reverse().map(item => ({
         ...item,
-        isCompleted: false,
+        isCompleted: completionStatuses[item.id],
       }))
       state.todos = newState
     },
@@ -79,8 +80,7 @@ export const slice = createSlice({
     updateTodo: (state, { payload: todo }) => {
       state.isLoading = true
     },
-    updateCompleteStatus: (state, { payload: id }) => {
-      state.isLoading = true
+    updateCompletionStatusSuccess: (state, { payload: id }) => {
       const newState = state.todos.map(item => {
         if (item.id === id) {
           return { ...item, isCompleted: !item.isCompleted }
@@ -89,6 +89,10 @@ export const slice = createSlice({
       })
       state.todos = newState
     },
+    updateCompletionStatusFailure: (state, { payload: error }) => {
+      state.error = error
+    },
+    updateCompletionStatus: (state, { payload: id }) => {},
     increaseDisplayCount: state => {
       state.displayCount += 10
     },

@@ -10,7 +10,7 @@ import TodoActionsView from "./TodoActionsView"
 interface Props {
   item: TodoType
   handleDelete: () => void
-  handleCompletedStatus: () => void
+  handleCompletionStatus: () => void
   checkboxKey: string | undefined
   isChecked: boolean | undefined
   navigateDetail: () => void
@@ -20,7 +20,7 @@ interface Props {
 export default function Todo({
   item,
   handleDelete,
-  handleCompletedStatus,
+  handleCompletionStatus,
   checkboxKey,
   isChecked,
   navigateDetail,
@@ -32,7 +32,7 @@ export default function Todo({
         key={checkboxKey}
         isChecked={isChecked}
         fillColor={theme.primary}
-        onPress={handleCompletedStatus}
+        onPress={handleCompletionStatus}
         iconStyle={{
           borderRadius: 0,
         }}
