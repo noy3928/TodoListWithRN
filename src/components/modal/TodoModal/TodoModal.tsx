@@ -18,26 +18,28 @@ export default function TodoModal({ modalType }: Props) {
   const [content, setContent] = useState(
     modalType == "EDIT" ? editInfo.content : ""
   )
+  const { addTodo, updateTodo, resetError } = todoSlice.todoActions
+  const { closeModal } = modalSlice.modalActions
 
   useEffect(() => {
     setContent(modalType == "EDIT" ? editInfo.content : "")
   }, [modalType, editInfo])
 
   const handleCloseModal = () => {
-    const { closeModal } = modalSlice.modalActions
+    if (error) dispatch(resetError())
     dispatch(closeModal())
   }
 
   // TODO : 글작성시 로딩 처리 및 에러 처리하기
   const handleAddTodo = () => {
     if (!content) return
-    const { addTodo } = todoSlice.todoActions
+
     dispatch(addTodo(content))
   }
 
   const handleUpdateTodo = () => {
     if (!content) return
-    const { updateTodo } = todoSlice.todoActions
+    if (error) dispatch(resetError())
     dispatch(
       updateTodo({
         id: editInfo.id,
@@ -46,7 +48,10 @@ export default function TodoModal({ modalType }: Props) {
     )
   }
 
-  const onChangeContent = (value: string) => setContent(value)
+  const onChangeContent = (value: string) => {
+    if (error) dispatch(resetError())
+    setContent(value)
+  }
 
   const props = {
     handleCloseModal,
@@ -56,6 +61,7 @@ export default function TodoModal({ modalType }: Props) {
     onChangeContent,
     modalType,
     isLoading,
+    error,
   }
 
   return <TodoModalView {...props} />

@@ -21,6 +21,7 @@ interface Props {
   content: string
   onChangeContent: (value: string) => void
   isLoading: boolean
+  error: string | null
 }
 
 export default function TodoModalView({
@@ -31,6 +32,7 @@ export default function TodoModalView({
   handleAddTodo,
   handleUpdateTodo,
   isLoading,
+  error,
 }: Props) {
   return (
     <Modal
@@ -41,6 +43,7 @@ export default function TodoModalView({
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
+          {error && <Text style={styles.errorText}>{error}</Text>}
           <TextInput
             style={styles.textInput}
             onChangeText={onChangeContent}
@@ -111,5 +114,11 @@ const styles = StyleSheet.create({
     borderColor: theme.primary,
     borderWidth: 1,
     maxHeight: 200,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: "center",
   },
 })

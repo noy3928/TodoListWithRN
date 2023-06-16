@@ -95,6 +95,9 @@ export const slice = createSlice({
     resetDisplayCount: state => {
       state.displayCount = initialState.displayCount
     },
+    resetError: state => {
+      state.error = initialState.error
+    },
   },
 })
 
