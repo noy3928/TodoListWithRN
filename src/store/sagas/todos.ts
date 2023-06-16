@@ -1,10 +1,15 @@
 import { call, put, takeEvery } from "redux-saga/effects"
 import * as API from "../../services"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { navigateTo } from "../../services/navigation/navigateUtils"
 
 import { todoActions } from "../slices/todos"
 import { modalActions } from "../slices/modal"
-import { ActionType, UpdateActionType } from "../../shared/types"
+import {
+  ActionType,
+  DeleteActionType,
+  UpdateActionType,
+} from "../../shared/types"
 
 // TODO : Generator 타입 지정하기
 export function* handleFetchTodos(): Generator<any, any, any> {
@@ -68,13 +73,14 @@ export function* handleUpdateTodos(
 }
 
 export function* handleDeleteTodos(
-  action: ActionType
+  action: DeleteActionType
 ): Generator<any, any, any> {
   const { deleteTodoSuccess, deleteTodoFailure } = todoActions
   try {
-    const id = action.payload
+    const { id, page } = action.payload
     yield call(API.deleteTodo, id)
     yield put(deleteTodoSuccess(id))
+    if (page == "Detail") navigateTo("Home")
   } catch (err) {
     yield put(deleteTodoFailure(err))
   }

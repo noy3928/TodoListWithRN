@@ -56,7 +56,7 @@ export const slice = createSlice({
       state.isLoading = false
       state.error = error
     },
-    deleteTodo: (state, { payload: id }) => {
+    deleteTodo: (state, { payload: { id, page } }) => {
       state.isLoading = true
     },
     getEditInfo: (state, { payload: { content, id } }) => {
