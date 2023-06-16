@@ -28,8 +28,9 @@ function* handleAddTodos(action: ActionType): Generator<any, any, any> {
 function* handleDeleteTodos(action: ActionType): Generator<any, any, any> {
   const { deleteTodoSuccess, deleteTodoFailure } = todoActions
   try {
-    const todos = yield call(API.deleteTodo, action.payload)
-    yield put(deleteTodoSuccess(todos))
+    const id = action.payload
+    yield call(API.deleteTodo, id)
+    yield put(deleteTodoSuccess(id))
   } catch (err) {
     yield put(deleteTodoFailure(err))
   }

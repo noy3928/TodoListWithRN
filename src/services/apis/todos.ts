@@ -22,7 +22,7 @@ export const addTodo = async (content: string) => {
 export const updateTodo = async ({ id, content }: Todo) => {
   try {
     console.log(id, content)
-    const response = await axiosInstance.patch(`/todo/${id}`, { content })
+    const response = await axiosInstance.patch(`/todo/${id}/`, { content })
     return response.data
   } catch (error) {
     console.error(error)
@@ -31,7 +31,7 @@ export const updateTodo = async ({ id, content }: Todo) => {
 
 export const deleteTodo = async (id: string) => {
   try {
-    const response = await axiosInstance.delete(`/todo/${id}`)
+    const response = await axiosInstance.delete(`/todo/${id}/`)
     return response.data
   } catch (error) {
     console.error(error)
