@@ -1,8 +1,8 @@
 import axios from "axios"
-import config from "react-native-config"
+import Constants from "expo-constants"
 
 const axiosInstance = axios.create({
-  baseURL: config.API_URL,
+  baseURL: Constants?.expoConfig?.extra?.apiUrl,
 })
 
 export default axiosInstance

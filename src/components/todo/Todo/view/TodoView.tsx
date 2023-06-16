@@ -1,10 +1,10 @@
 import React from "react"
 import { StyleSheet, View, TouchableOpacity } from "react-native"
-import { Todo as TodoType } from "../../../shared/types"
+import { Todo as TodoType } from "../../../../shared/types"
 
-import theme from "../../../shared/theme"
+import theme from "../../../../shared/theme"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
-import TodoText from "../TodoText"
+import TodoText from "../../TodoText"
 import TodoActionsView from "./TodoActionsView"
 
 interface Props {

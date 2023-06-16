@@ -1,6 +1,6 @@
 import React from "react"
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
-import theme from "../../../shared/theme"
+import theme from "../../../../shared/theme"
 
 interface Props {
   onDelete: () => void
