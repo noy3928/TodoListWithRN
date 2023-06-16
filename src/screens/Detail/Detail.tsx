@@ -33,12 +33,18 @@ export default function Detail({ route }: DetailProps) {
     handleOpenModal("EDIT", { content, id })
   }
 
+  const handleDelete = () => {
+    const { deleteTodo } = todoSlice.todoActions
+    dispatch(deleteTodo({ id, page: "Detail" }))
+  }
+
   const props = {
-    handleCompleteStatus,
     isCompleted,
     content,
     modalType,
+    handleCompleteStatus,
     handleOpenEditModal,
+    handleDelete,
   }
 
   return <DetailView {...props} />

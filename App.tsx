@@ -8,6 +8,7 @@ import createStore from "./src/store"
 import Home from "./src/screens/Home"
 import Detail from "./src/screens/Detail"
 import theme from "./src/shared/theme"
+import { navigationRef } from "./src/services/navigation/navigateUtils"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 const store = createStore()
@@ -15,7 +16,7 @@ const store = createStore()
 export default function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
           screenOptions={{
             headerTintColor: theme.primary,
