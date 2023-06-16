@@ -10,7 +10,6 @@ import {
 import theme from "../../../../shared/theme"
 
 import { ModalType } from "../../../../shared/types"
-
 import ActionButtonView from "./ActionButtonView"
 
 interface Props {

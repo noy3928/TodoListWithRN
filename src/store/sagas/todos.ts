@@ -6,7 +6,7 @@ import { ActionType, UpdateActionType } from "../../shared/types"
 import { ERROR_MESSAGE } from "../../shared/constants"
 
 // TODO : Generator 타입 지정하기
-function* handleFetchTodos(): Generator<any, any, any> {
+export function* handleFetchTodos(): Generator<any, any, any> {
   const { fetchTodoSuccess, fetchTodoFailure } = todoActions
   try {
     const todos = yield call(API.fetchTodos)
@@ -17,9 +17,11 @@ function* handleFetchTodos(): Generator<any, any, any> {
   }
 }
 
-function* handleAddTodos(action: ActionType): Generator<any, any, any> {
+export function* handleAddTodos(action: ActionType): Generator<any, any, any> {
   const { addTodoSuccess, addTodoFailure } = todoActions
   const { closeModal } = modalActions
+
+  console.log(action)
 
   try {
     const todos = yield call(API.addTodo, action.payload)
@@ -30,7 +32,7 @@ function* handleAddTodos(action: ActionType): Generator<any, any, any> {
   }
 }
 
-function* handleUpdateTodos(
+export function* handleUpdateTodos(
   action: UpdateActionType
 ): Generator<any, any, any> {
   const { updateTodoSuccess, updateTodoFailure } = todoActions
@@ -44,7 +46,9 @@ function* handleUpdateTodos(
   }
 }
 
-function* handleDeleteTodos(action: ActionType): Generator<any, any, any> {
+export function* handleDeleteTodos(
+  action: ActionType
+): Generator<any, any, any> {
   const { deleteTodoSuccess, deleteTodoFailure } = todoActions
   try {
     const id = action.payload
