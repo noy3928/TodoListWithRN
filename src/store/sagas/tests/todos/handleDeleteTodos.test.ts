@@ -4,6 +4,7 @@ import { handleDeleteTodos } from "../../todos"
 import * as API from "../../../../services"
 import { todoActions } from "../../../slices/todos"
 import * as navigateUtils from "../../../../services/navigation/navigateUtils"
+import { ERROR_MESSAGE } from "../../../../shared/constants"
 
 jest.mock("@react-navigation/native", () => {
   return {
@@ -62,13 +63,13 @@ describe("handleDeleteTodos", () => {
   })
 
   it("Todo 삭제 작업이 실패할 경우 에러를 처리해야 한다.", () => {
-    const error = new Error("에러 발생")
+    const error = new Error(ERROR_MESSAGE.REQUEST_FAILED)
 
     testSaga(handleDeleteTodos, makeMockAction("Home"))
       .next()
       .call(API.deleteTodo, mockId)
       .throw(error)
-      .put(todoActions.deleteTodoFailure(error))
+      .put(todoActions.deleteTodoFailure(error.message))
       .next()
       .isDone()
   })
