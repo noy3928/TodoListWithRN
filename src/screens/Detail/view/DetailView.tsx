@@ -1,6 +1,7 @@
 import React from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { ModalType } from "../../../shared/types"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
 
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import TodoText from "../../../components/todo/TodoText"
@@ -45,9 +46,12 @@ export default function DetailView({
         onPress={handleOpenEditModal}
         disabled={isCompleted}
       >
-        <Text style={isCompleted ? styles.textDisabled : styles.text}>
-          수정하기
-        </Text>
+        <MaterialCommunityIcons
+          name="pencil-outline"
+          size={30}
+          color={theme.primary}
+          style={isCompleted ? styles.textDisabled : styles.text}
+        />
       </TouchableOpacity>
     </View>
   )
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   text: {
-    fontSize: 20,
+    fontSize: 30,
     color: theme.primary,
   },
   bottom: {
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textDisabled: {
-    fontSize: 20,
+    fontSize: 30,
     color: theme.primaryLight,
     textDecorationLine: "line-through",
   },
