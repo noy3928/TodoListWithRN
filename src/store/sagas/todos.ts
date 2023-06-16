@@ -40,8 +40,8 @@ export function* handleFetchTodos(): Generator<any, any, any> {
         })
       )
     }
-  } catch (err) {
-    yield put(fetchTodoFailure(err))
+  } catch (err: any) {
+    yield put(fetchTodoFailure(err.message))
   }
 }
 
@@ -53,8 +53,8 @@ export function* handleAddTodos(action: ActionType): Generator<any, any, any> {
     const todos = yield call(API.addTodo, action.payload)
     yield put(addTodoSuccess(todos))
     yield put(closeModal())
-  } catch (err) {
-    yield put(addTodoFailure(err))
+  } catch (err: any) {
+    yield put(addTodoFailure(err.message))
   }
 }
 
@@ -67,8 +67,8 @@ export function* handleUpdateTodos(
     const todos = yield call(API.updateTodo, action.payload)
     yield put(updateTodoSuccess(todos))
     yield put(closeModal())
-  } catch (err) {
-    yield put(updateTodoFailure(err))
+  } catch (err: any) {
+    yield put(updateTodoFailure(err.message))
   }
 }
 
@@ -81,8 +81,8 @@ export function* handleDeleteTodos(
     yield call(API.deleteTodo, id)
     yield put(deleteTodoSuccess(id))
     if (page == "Detail") navigateTo("Home")
-  } catch (err) {
-    yield put(deleteTodoFailure(err))
+  } catch (err: any) {
+    yield put(deleteTodoFailure(err.message))
   }
 }
 
