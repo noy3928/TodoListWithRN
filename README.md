@@ -179,12 +179,13 @@ $ yarn ios or yarn android
 
 ### 토글된 값 저장하기
 
-- 토글된 값은 AsyncStorage에 상태가 저장되도록 구현했습니다.
+- 토글된 값은 AsyncStorage에 상태가 저장되도록 구현했습니다. 해당 작업은 비동기적인 로직이기에 사가안에서 관리하도록 만들었습니다.
   - 각 id에 대한 토글 상태값을 AsyncStorage에 저장하고, 화면 로드시 AsyncStorage에 저장된 값을 활용했습니다.
     - 초기 데이터가 없을 경우 모든 id에 대해 false 값을 지정하고 AsyncStorage에 저장했습니다.
   - 토글동작이 있을 때마다 해당 id에 대한 토글 상태값을 AsyncStorage에 저장했습니다.
     - 특히 토글 동작은 유저에 의해 연속적으로 일어날 가능성이 있기 때문에 takeLatest 이펙트를 사용했습니다.
 
+</details>
 <summary>데이터 패치시 토글 상태 값 관련 코드 소개</summary>
 <div markdown="1">
 
