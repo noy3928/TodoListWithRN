@@ -185,7 +185,7 @@ $ yarn ios or yarn android
   - 토글동작이 있을 때마다 해당 id에 대한 토글 상태값을 AsyncStorage에 저장했습니다.
     - 특히 토글 동작은 유저에 의해 연속적으로 일어날 가능성이 있기 때문에 takeLatest 이펙트를 사용했습니다.
 
-</details>
+<details>
 <summary>데이터 패치시 토글 상태 값 관련 코드 소개</summary>
 <div markdown="1">
 
