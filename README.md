@@ -467,3 +467,102 @@ export function* handleDeleteTodos(action: DeleteActionType): Generator<any, any
 
 </div>
 </details>
+
+### 사가 함수에 대한 테스트코드 작성 [link](https://github.com/noy3928/TodoListWithRN/tree/main/src/store/sagas/tests/todos)
+
+- 사가 함수에 대한 테스트코드를 작성했습니다.
+- 사가 함수 안에서는 다양한 상황에 대한 비동기 로직이 작성되어있기 때문에, 테스트코드를 작성하는데 어려움이 있었습니다. 이를 위해 공식문서에서도 추천하는 redux-saga-test-plan 라이브러리를 사용했습니다.
+- 다양한 상황에 대해서 발생할 수 있는 케이스를 분기하여 함수를 테스트했습니다.
+
+<details>
+<summary> 다양한 상황에 대해 케이스를 분기하여 테스트한 코드 소개 : </summary>
+<div markdown="1">
+
+```js
+jest.mock("@react-navigation/native", () => {
+  return {
+    __esModule: true,
+    createNavigationContainerRef: jest.fn(() => ({
+      isReady: jest.fn().mockReturnValue(true),
+      dispatch: jest.fn(),
+    })),
+    CommonActions: {
+      navigate: jest.fn(),
+    },
+  }
+})
+
+describe("handleDeleteTodos", () => {
+  const mockId = "1234"
+  const makeMockAction = (page: string) => ({
+    type: "todos/handleDeleteTodos",
+    payload: { id: mockId, page },
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  describe("디테일 페이지에서 삭제를 진행할 경우", () => {
+    it("삭제완료 후 Home으로 이동하는 navigate함수가 호출되어야 한다.", () => {
+      const navigateToSpy = jest.spyOn(navigateUtils, "navigateTo")
+
+      testSaga(handleDeleteTodos, makeMockAction("Detail"))
+        .next()
+        .call(API.deleteTodo, mockId)
+        .next()
+        .put(todoActions.deleteTodoSuccess(mockId))
+        .next()
+        .isDone()
+
+      expect(navigateToSpy).toHaveBeenCalledWith("Home")
+    })
+  })
+
+  describe("디테일 페이지가 아닌 곳에서 삭제를 진행하면", () => {
+    it("삭제완료 후 Home으로 이동하는 navigate함수가 호출되지 않는다.", () => {
+      const navigateToSpy = jest.spyOn(navigateUtils, "navigateTo")
+
+      testSaga(handleDeleteTodos, makeMockAction("Home"))
+        .next()
+        .call(API.deleteTodo, mockId)
+        .next()
+        .put(todoActions.deleteTodoSuccess(mockId))
+        .next()
+        .isDone()
+
+      expect(navigateToSpy).not.toHaveBeenCalledWith("Home")
+    })
+  })
+
+  it("Todo 삭제 작업이 실패할 경우 에러를 처리해야 한다.", () => {
+    const error = new Error(ERROR_MESSAGE.REQUEST_FAILED)
+
+    testSaga(handleDeleteTodos, makeMockAction("Home"))
+      .next()
+      .call(API.deleteTodo, mockId)
+      .throw(error)
+      .put(todoActions.deleteTodoFailure(error.message))
+      .next()
+      .isDone()
+  })
+})
+```
+
+</div>
+</details>
+
+<br>
+
+## Challenge Points
+
+- 토글 상태 저장 :
+  - 상황 : 토글 상태를 저장된 상태로 유지해야 했습니다. 해당 기능을 서버에서 제공하지 않기 때문에, 클라이언트 측에서 앱이 꺼지더라도 토글 상태를 저장할 수 있는 방법을 찾아야했습니다.
+  - 해결 : AsyncStorage를 사용하여 토글 상태를 저장했습니다. AsyncStorage는 비동기적인 로직이기 때문에 사가에서 관리하도록 만들었습니다. 토글 상태를 저장할 때는 AsyncStorage에 저장된 상태값을 가져와서 해당 id에 대한 토글 상태값을 업데이트한 후 AsyncStorage에 다시 저장하는 방식으로 구현했습니다.
+- 무한 스크롤 :
+  - 상황 : 서버에서 페이징 기능을 제공하지 않기 때문에, 클라이언트 측에서 무한 스크롤을 구현해야 했습니다.
+  - 해결 : 화면 하단에 닿으면 displayCount를 +10 해주는 방식으로 구현했습니다. 이렇게 되면 10개씩 추가로 보여주게 됩니다. 이때, FlatList의 onEndReachedThreshold를 0.1로 설정하여, 해당 범위에 닿으면 displayCount를 +10 해주는 함수를 실행하도록 구현했습니다.
+- 삭제시 디테일 페이지에서 홈페이지로 이동 :
+  - 상황 : 디테일 페이지에서 홈으로 이동할 때, 삭제가 완료된 것을 확인하지 않고 곧바로 홈으로 이동하는 것이 흐름상 옳지 못하다고 생각되었습니다. 따라서 삭제가 완료된 것을 확인 후 홈으로 이동할 수 있도록 비동기적으로 처리해야겠다고 생각했습니다. 이것을 구현하기 위해서는 리덕스 사가 안에서 네비게이션을 사용해야 했습니다.
+  - 해결 : 이것을 구현하기 위해 navigationUtils라는 유틸을 만들어서 사용했습니다. react navigation의 공식문서에서 [prop 없이 네비게이션을 할 수 있는 방법](https://reactnavigation.org/docs/navigating-without-navigation-prop/)을 찾았고, 해당 내용을 적용하여 navigationUtils를 만들었습니다. 이후 navigationUtils를 사가에서 사용하여 디테일 페이지에서 삭제가 완료된 것을 확인한 후 홈으로 이동하도록 구현했습니다.
+-
