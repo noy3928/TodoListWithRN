@@ -60,7 +60,9 @@ $ yarn ios or yarn android
 
 <br>
 
-## 폴더구조
+## 폴더구조 및 아키텍처 설명
+
+### 폴더구조
 
 ```js
 📦src
@@ -122,6 +124,30 @@ $ yarn ios or yarn android
  ┃ ┗ 📜index.ts                     // 스토어 파일
 ```
 
+### 아키텍처 설명
+
+- 코드를 UI, View로직, 비지니스 로직, 데이터 로직으로 나누어서 관심사를 분리했습니다.
+  - UI : VAC 패턴을 이용하여 로직 UI에만 관심을 쏟고 나머지는 외부에서 받아오도록 구현했습니다. 오직 렌더링에만 집중합니다.
+  - View로직 : View 로직은 VAC 컴포넌트의 상위 컴포넌트에 위치하고 있습니다. View와 관련된 모든 로직은 이곳에서 처리되며, 필요한 로직은 props를 통해 VAC 컴포넌트에 전달됩니다.
+  - 비지니스 로직 : API 요청, AsyncStorage를 통한 데이터 저장 및 접근 등의 비동기적인 비즈니스 로직은 Saga를 통해 처리했습니다.
+  - 데이터 로직 : 데이터를 가져오고 가공하는 모든 로직은 Redux를 통해 관리했습니다.
+
+<details>
+<summary>VAC패턴 사용에 대한 소감</summary>
+<div markdown="1">
+
+- 장점 :
+  - 코드 관심사 분리로 인해 코드 가독성이 좋아지는 것 같았습니다.
+  - 큰 회사의 경우 퍼블리셔와 프론트개발자가 나누어져있기 때문에 그 나름대로 유익이 있을 것이라 생각했습니다. 설사 작은 스타트업이라 할지라도 디자인 시스템이 적용된 프로젝트의 경우 자동으로 VAC 패턴을 사용할 수 밖에 없겠다는 생각이 들었습니다.
+  - 컴포넌트에 대한 테스트코드를 작성할 때, 더욱 테스트하기 쉬운 컴포넌트가 될 가능성이 높아진다고 생각이 되었습니다. 왜냐하면 VAC 컴포넌트의 경우엔 외부에 대한 의존성이 극히 적고, 모든 의존성을 명시적으로 props를 통해 받아오기 때문에 테스트하기 쉬울 것 같았습니다. 테스트하기 쉬운 코드가 작성된다는 것은 또한 코드의 품질이 올라간다는 것이고 이는 유지보수성 또한 올라가게 된다는 것을 의미한다고 생각했습니다.
+  - 폴더상으로 렌더링과 관련된 컴포넌트와 로직과 관련된 컴포넌트가 분리되어있어, 폴더상의 가독성이 좋아질 수 있다고 생각되었습니다.
+- 단점 :
+  - 컴포넌트의 구조가 복잡해질 수록 props drilling이 생길 위험이 높아질 것 같았습니다. 이것은 또한 그 나름대로 유지보수성을 해치는 요인이 될 것이라고 생각되었습니다.
+  - 파일이 많아지면서 폴더 구조가 복잡해질 수 있다는 단점이 있을 것 같았습니다.
+
+</div>
+</details>
+
 <br>
 
 ## 구현해야하는 기능
@@ -156,12 +182,14 @@ $ yarn ios or yarn android
 - 토글된 값은 AsyncStorage에 상태가 저장되도록 구현했습니다.
   - 각 id에 대한 토글 상태값을 AsyncStorage에 저장하고, 화면 로드시 AsyncStorage에 저장된 값을 활용했습니다.
     - 초기 데이터가 없을 경우 모든 id에 대해 false 값을 지정하고 AsyncStorage에 저장했습니다.
-  - 토글작업을 할 때마다 해당 id에 대한 토글 상태값을 AsyncStorage에 저장했습니다.
+  - 토글동작이 있을 때마다 해당 id에 대한 토글 상태값을 AsyncStorage에 저장했습니다.
+    - 특히 토글 동작은 유저에 의해 연속적으로 일어날 가능성이 있기 때문에 takeLatest 이펙트를 사용했습니다.
 
-코드 소개 :
+<summary>데이터 패치시 토글 상태 값 관련 코드 소개</summary>
+<div markdown="1">
 
 ```js
-// 데이터 패치시 사가함수 코드 일부
+// 데이터 패치시 사가함수 코드
 export function* handleFetchTodos(): Generator<any, any, any> {
   const { fetchTodoSuccess, fetchTodoFailure } = todoActions
   try {
@@ -194,7 +222,7 @@ export function* handleFetchTodos(): Generator<any, any, any> {
   }
 }
 
-// 데이터 패치 성공시 스토어에 저장 코드 일부
+// 데이터 패치 성공시 스토어에 저장하는 리듀서 코드
   fetchTodoSuccess: (state, action: PayloadAction<PayloadTodos>) => {
     state.isLoading = false
     const completionStatuses = action.payload.completionStatuses
@@ -206,13 +234,64 @@ export function* handleFetchTodos(): Generator<any, any, any> {
   },
 ```
 
+</div>
+</details>
+
+<details>
+<summary>토글 동작시 AsyncStorage에 저장 코드 소개</summary>
+<div markdown="1">
+
+```js
+// 토글 동작시 수행되는 사가함수 코드
+export function* handleUpdateCompletionStatus(
+  action: ActionType
+): Generator<any, any, any> {
+  const { updateCompletionStatusSuccess, updateCompletionStatusFailure } =
+    todoActions
+  const id = action.payload
+  try {
+    const storedStatuses = yield call(
+      AsyncStorage.getItem,
+      "completionStatuses"
+    )
+    const completionStatuses = JSON.parse(storedStatuses) || {}
+    completionStatuses[id] = !completionStatuses[id]
+    yield call(
+      AsyncStorage.setItem,
+      "completionStatuses",
+      JSON.stringify(completionStatuses)
+    )
+
+    yield put(updateCompletionStatusSuccess(id))
+  } catch (err) {
+    yield put(updateCompletionStatusFailure(err))
+  }
+}
+
+// 토글 동작시 수행되는 리듀서 코드
+updateCompletionStatusSuccess: (state, { payload: id }) => {
+  const newState = state.todos.map(item => {
+    if (item.id === id) {
+      return { ...item, isCompleted: !item.isCompleted }
+    }
+    return item
+  })
+  state.todos = newState
+},
+```
+
+</div>
+</details>
+
 ### 무한스크롤 구현
 
 - 서버에서 페이징 기능을 제공하지 않기 때문에 임의로 클라이언트에서 값을 10개씩 잘라서 보여줬습니다.
 - displayCount 값을 저장하고, displayCount 값만큼 화면에 보여줍니다.
 - 화면이 하단의 10% 범위에 닿게되면 displayCount를 +10 해주었습니다. 이렇게 되면 10개씩 추가로 보여주게 됩니다.
 
-코드 소개 :
+<details>
+<summary> 무한스크롤 코드 소개</summary>
+<div markdown="1">
 
 ```js
 // 초기 상태 값
@@ -254,13 +333,18 @@ const handleDisplayMore = () => {
 />
 ```
 
+</div>
+</details>
+
 ### 에러 및 로딩 처리
 
 - 에러가 발생했을 경우, axios의 interceptor를 활용하여 에러를 핸들링했습니다.
 - 에러가 발생했을 경우, 스토어에 error라는 상태값을 저장하여, 에러메시지를 화면에 보여주도록 구현했습니다.
 - 로딩 처리는 스토어에 isLoading이라는 상태값을 저장하여, 로딩중일 경우 ActivityIndicator를 보여주도록 구현했습니다.
 
-에러처리 코드 소개 :
+<details>
+<summary> 에러처리 코드 소개</summary>
+<div markdown="1">
 
 ```js
 // 에러 핸들링 코드 일부
@@ -303,7 +387,12 @@ fetchTodoFailure: (state, { payload: error }) => {
 {error && <Text style={styles.errorText}>{error}</Text>}
 ```
 
-로딩처리 코드 소개 :
+</div>
+</details>
+
+<details>
+<summary> 로딩처리 코드 소개</summary>
+<div markdown="1">
 
 ```js
 // 로딩중일 경우 스토어에 저장 코드
@@ -325,13 +414,21 @@ addTodoSuccess: (state, { payload: todo }) => {
 </Pressable>
 ```
 
+</div>
+</details>
+
 ### Detail 페이지에서 삭제 기능 구현
 
 - Detail 페이지에서 삭제가 가능하도록 만들었습니다.
 - 삭제 요청 후 곧바로 홈페이지로 이동하도록 만들지 않고, 비동기적으로 사가에서 삭제가 완료된 것을 확인한 후 홈페이지로 이동하도록 구현했습니다.
   - navigaTo 라는 유틸을 따로 만든 후 해당 유틸을 사가 안에서 사용하도록 만들었습니다.
 
+<details>
+<summary> 디테일 페이지 삭제 후 홈으로 이동하는 코드 소개</summary>
+<div markdown="1">
+
 ```js
+// navigationUtils.ts
 import {
   CommonActions,
   createNavigationContainerRef,
@@ -367,16 +464,5 @@ export function* handleDeleteTodos(action: DeleteActionType): Generator<any, any
 
 ```
 
-### VAC 패턴 적용 및 코드 관심사 분리
-
-- VAC 패턴을 적용하여 렌더링과 로직을 분리했습니다.
-- 특히 비지니스 로직을 작성해야하는 경우 최대한 리덕스쪽에 작성하도록 구현했습니다.
-- 느낀점 :
-  - 장점 :
-    - 코드 관심사 분리로 인해 코드 가독성이 좋아지는 것 같았습니다.
-    - 큰 회사의 경우 퍼블리셔와 프론트개발자가 나누어져있기 때문에 그 나름대로 유익이 있을 것이라 생각했습니다. 설사 작은 스타트업이라 할지라도 디자인 시스템이 적용된 프로젝트의 경우 자동으로 VAC 패턴을 사용할 수 밖에 없겠다는 생각이 들었습니다.
-    - 컴포넌트에 대한 테스트코드를 작성할 때, 더욱 테스트하기 쉬운 컴포넌트가 될 가능성이 높아진다고 생각이 되었습니다. 왜냐하면 VAC 컴포넌트의 경우엔 외부에 대한 의존성이 극히 적고, 모든 의존성을 명시적으로 props를 통해 받아오기 때문에 테스트하기 쉬울 것 같았습니다. 테스트하기 쉬운 코드가 작성된다는 것은 또한 코드의 품질이 올라간다는 것이고 이는 유지보수성 또한 올라가게 된다는 것을 의미한다고 생각했습니다.
-    - 폴더상으로 렌더링과 관련된 컴포넌트와 로직과 관련된 컴포넌트가 분리되어있어, 폴더상의 가독성이 좋아질 수 있다고 생각되었습니다.
-  - 단점 :
-    - 컴포넌트의 구조가 복잡해질 수록 props drilling이 생길 위험이 높아질 것 같았습니다. 이것은 또한 그 나름대로 유지보수성을 해치는 요인이 될 것이라고 생각되었습니다.
-    - 파일이 많아지면서 폴더 구조가 복잡해질 수 있다는 단점이 있을 것 같았습니다.
+</div>
+</details>

@@ -44,12 +44,11 @@ export default function Todo({
         <TouchableOpacity onPress={navigateDetail} style={styles.textContainer}>
           <TodoText content={item.content} isCompleted={item.isCompleted} />
         </TouchableOpacity>
-        {!item.isCompleted && (
-          <TodoActionsView
-            onDelete={handleDelete}
-            handleOpenEditModal={handleOpenEditModal}
-          />
-        )}
+        <TodoActionsView
+          onDelete={handleDelete}
+          handleOpenEditModal={handleOpenEditModal}
+          item={item}
+        />
       </View>
     </View>
   )

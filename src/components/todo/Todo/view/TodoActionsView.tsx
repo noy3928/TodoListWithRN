@@ -2,24 +2,29 @@ import React from "react"
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
 import theme from "../../../../shared/theme"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { Todo } from "../../../../shared/types"
 
 interface Props {
+  item: Todo
   onDelete: () => void
   handleOpenEditModal: () => void
 }
 
-const TodoActions = ({ onDelete, handleOpenEditModal }: Props) => {
+const TodoActions = ({ onDelete, handleOpenEditModal, item }: Props) => {
   return (
     <View style={styles.buttonContainer}>
       <>
-        <TouchableOpacity onPress={handleOpenEditModal}>
-          <MaterialCommunityIcons
-            name="pencil-outline"
-            size={24}
-            color={theme.primary}
-            style={styles.editButton}
-          />
-        </TouchableOpacity>
+        {!item.isCompleted && (
+          <TouchableOpacity onPress={handleOpenEditModal}>
+            <MaterialCommunityIcons
+              name="pencil-outline"
+              size={24}
+              color={theme.primary}
+              style={styles.editButton}
+            />
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity onPress={onDelete}>
           <MaterialCommunityIcons
             name="delete-outline"
