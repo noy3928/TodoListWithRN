@@ -182,12 +182,14 @@ $ yarn ios or yarn android
 - 토글된 값은 AsyncStorage에 상태가 저장되도록 구현했습니다.
   - 각 id에 대한 토글 상태값을 AsyncStorage에 저장하고, 화면 로드시 AsyncStorage에 저장된 값을 활용했습니다.
     - 초기 데이터가 없을 경우 모든 id에 대해 false 값을 지정하고 AsyncStorage에 저장했습니다.
-  - 토글작업을 할 때마다 해당 id에 대한 토글 상태값을 AsyncStorage에 저장했습니다.
+  - 토글동작이 있을 때마다 해당 id에 대한 토글 상태값을 AsyncStorage에 저장했습니다.
+    - 특히 토글 동작은 유저에 의해 연속적으로 일어날 가능성이 있기 때문에 takeLatest 이펙트를 사용했습니다.
 
-코드 소개 :
+<summary>데이터 패치시 토글 상태 값 관련 코드 소개</summary>
+<div markdown="1">
 
 ```js
-// 데이터 패치시 사가함수 코드 일부
+// 데이터 패치시 사가함수 코드
 export function* handleFetchTodos(): Generator<any, any, any> {
   const { fetchTodoSuccess, fetchTodoFailure } = todoActions
   try {
@@ -220,7 +222,7 @@ export function* handleFetchTodos(): Generator<any, any, any> {
   }
 }
 
-// 데이터 패치 성공시 스토어에 저장 코드 일부
+// 데이터 패치 성공시 스토어에 저장하는 리듀서 코드
   fetchTodoSuccess: (state, action: PayloadAction<PayloadTodos>) => {
     state.isLoading = false
     const completionStatuses = action.payload.completionStatuses
@@ -232,13 +234,64 @@ export function* handleFetchTodos(): Generator<any, any, any> {
   },
 ```
 
+</div>
+</details>
+
+<details>
+<summary>토글 동작시 AsyncStorage에 저장 코드 소개</summary>
+<div markdown="1">
+
+```js
+// 토글 동작시 수행되는 사가함수 코드
+export function* handleUpdateCompletionStatus(
+  action: ActionType
+): Generator<any, any, any> {
+  const { updateCompletionStatusSuccess, updateCompletionStatusFailure } =
+    todoActions
+  const id = action.payload
+  try {
+    const storedStatuses = yield call(
+      AsyncStorage.getItem,
+      "completionStatuses"
+    )
+    const completionStatuses = JSON.parse(storedStatuses) || {}
+    completionStatuses[id] = !completionStatuses[id]
+    yield call(
+      AsyncStorage.setItem,
+      "completionStatuses",
+      JSON.stringify(completionStatuses)
+    )
+
+    yield put(updateCompletionStatusSuccess(id))
+  } catch (err) {
+    yield put(updateCompletionStatusFailure(err))
+  }
+}
+
+// 토글 동작시 수행되는 리듀서 코드
+updateCompletionStatusSuccess: (state, { payload: id }) => {
+  const newState = state.todos.map(item => {
+    if (item.id === id) {
+      return { ...item, isCompleted: !item.isCompleted }
+    }
+    return item
+  })
+  state.todos = newState
+},
+```
+
+</div>
+</details>
+
 ### 무한스크롤 구현
 
 - 서버에서 페이징 기능을 제공하지 않기 때문에 임의로 클라이언트에서 값을 10개씩 잘라서 보여줬습니다.
 - displayCount 값을 저장하고, displayCount 값만큼 화면에 보여줍니다.
 - 화면이 하단의 10% 범위에 닿게되면 displayCount를 +10 해주었습니다. 이렇게 되면 10개씩 추가로 보여주게 됩니다.
 
-코드 소개 :
+<details>
+<summary> 무한스크롤 코드 소개</summary>
+<div markdown="1">
 
 ```js
 // 초기 상태 값
@@ -280,13 +333,18 @@ const handleDisplayMore = () => {
 />
 ```
 
+</div>
+</details>
+
 ### 에러 및 로딩 처리
 
 - 에러가 발생했을 경우, axios의 interceptor를 활용하여 에러를 핸들링했습니다.
 - 에러가 발생했을 경우, 스토어에 error라는 상태값을 저장하여, 에러메시지를 화면에 보여주도록 구현했습니다.
 - 로딩 처리는 스토어에 isLoading이라는 상태값을 저장하여, 로딩중일 경우 ActivityIndicator를 보여주도록 구현했습니다.
 
-에러처리 코드 소개 :
+<details>
+<summary> 에러처리 코드 소개</summary>
+<div markdown="1">
 
 ```js
 // 에러 핸들링 코드 일부
@@ -329,7 +387,12 @@ fetchTodoFailure: (state, { payload: error }) => {
 {error && <Text style={styles.errorText}>{error}</Text>}
 ```
 
-로딩처리 코드 소개 :
+</div>
+</details>
+
+<details>
+<summary> 로딩처리 코드 소개</summary>
+<div markdown="1">
 
 ```js
 // 로딩중일 경우 스토어에 저장 코드
@@ -351,13 +414,21 @@ addTodoSuccess: (state, { payload: todo }) => {
 </Pressable>
 ```
 
+</div>
+</details>
+
 ### Detail 페이지에서 삭제 기능 구현
 
 - Detail 페이지에서 삭제가 가능하도록 만들었습니다.
 - 삭제 요청 후 곧바로 홈페이지로 이동하도록 만들지 않고, 비동기적으로 사가에서 삭제가 완료된 것을 확인한 후 홈페이지로 이동하도록 구현했습니다.
   - navigaTo 라는 유틸을 따로 만든 후 해당 유틸을 사가 안에서 사용하도록 만들었습니다.
 
+<details>
+<summary> 디테일 페이지 삭제 후 홈으로 이동하는 코드 소개</summary>
+<div markdown="1">
+
 ```js
+// navigationUtils.ts
 import {
   CommonActions,
   createNavigationContainerRef,
@@ -392,3 +463,6 @@ export function* handleDeleteTodos(action: DeleteActionType): Generator<any, any
 }
 
 ```
+
+</div>
+</details>
