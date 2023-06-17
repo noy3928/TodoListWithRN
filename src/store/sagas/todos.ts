@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from "redux-saga/effects"
+import { call, put, takeEvery, takeLatest } from "redux-saga/effects"
 import * as API from "../../services"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { navigateTo } from "../../services/navigation/navigateUtils"
@@ -124,5 +124,5 @@ export default function* watchTodos() {
   yield takeEvery(addTodo, handleAddTodos)
   yield takeEvery(updateTodo, handleUpdateTodos)
   yield takeEvery(deleteTodo, handleDeleteTodos)
-  yield takeEvery(updateCompletionStatus, handleUpdateCompletionStatus)
+  yield takeLatest(updateCompletionStatus, handleUpdateCompletionStatus)
 }
