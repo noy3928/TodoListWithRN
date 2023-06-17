@@ -11,6 +11,7 @@ import theme from "../../../../shared/theme"
 
 import { ModalType } from "../../../../shared/types"
 import ActionButtonView from "./ActionButtonView"
+import Button from "../../../ui/Button"
 
 interface Props {
   content: string
@@ -51,9 +52,7 @@ export default function TodoModalView({
             numberOfLines={5}
           />
           <View style={styles.buttonsView}>
-            <Pressable style={styles.button} onPress={handleCloseModal}>
-              <Text style={styles.textStyle}>취소</Text>
-            </Pressable>
+            <Button onPress={handleCloseModal} text="취소" />
             <ActionButtonView
               modalType={modalType}
               handleAddTodo={handleAddTodo}

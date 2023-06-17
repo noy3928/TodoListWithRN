@@ -42,11 +42,11 @@ export default function Todo({ item, navigation }: Props) {
   }
 
   const props = {
-    handleDelete,
-    handleCompletionStatus,
     checkboxKey: item.isCompleted?.toString(),
     isChecked: item.isCompleted,
     item,
+    handleCompletionStatus,
+    handleDelete,
     navigateDetail,
     handleOpenEditModal,
   }

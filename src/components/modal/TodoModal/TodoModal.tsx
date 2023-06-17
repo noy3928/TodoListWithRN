@@ -55,14 +55,14 @@ export default function TodoModal({ modalType }: Props) {
   }
 
   const props = {
-    handleCloseModal,
-    handleAddTodo,
-    handleUpdateTodo,
     content,
-    onChangeContent,
     modalType,
     isLoading,
     error,
+    handleCloseModal,
+    handleAddTodo,
+    handleUpdateTodo,
+    onChangeContent,
   }
 
   return <TodoModalView {...props} />
